@@ -10,13 +10,14 @@
 // - http://en.sfml-dev.org/forums/index.php?topic=3543.0 (uint8 and image class)
 
 #include <iostream>
+#include <math.h>
 #include <SFML/graphics.hpp>
 
 sf::Uint8 * render(int w, int h);
-sf::Uint8 *cast(int x, int y);
+sf::Uint8 *cast(int x, int y, int b);
 
-int w = 640;
-int h = 480;
+int w = 400;
+int h = 400;
 
 int main(int argc, const char * argv[])
 {
@@ -47,6 +48,7 @@ int main(int argc, const char * argv[])
         window.clear(sf::Color::Black);
         
         // RAYTRACE!
+        // TODO threaded async http://en.cppreference.com/w/cpp/thread
         sf::Uint8 *rawRender = render(w, h);
         
         // Write frame.
@@ -71,7 +73,7 @@ sf::Uint8 *render(int w, int h)
     for (int x = 0; x < w; x++) {
         for (int y = 0; y < h; y++) {
             // Cast ray.
-            sf::Uint8 *ray = cast(x, y);
+            sf::Uint8 *ray = cast(x, y, 0);
             
             // Store color of pixel.
             raw[(x * h + y) * 4] = ray[0];
@@ -86,21 +88,35 @@ sf::Uint8 *render(int w, int h)
     return raw;
 }
 
-sf::Uint8 *cast(int x, int y)
+sf::Uint8 *cast(int x, int y, int b)
 {
     sf::Uint8 *ray = new sf::Uint8[4];
-    ray[0] = std::rand()*255;
-    ray[1] = std::rand()*255;
-    ray[2] = std::rand()*255;
+    
+    if (b >= 6) {
+        ray[2] = 200;
+    } else if (pow((double)(x-200),2) + pow((double)(y-200),2) <= pow(50, 2)) { // Hit circle.
+        // Recast ray
+        sf::Uint8 *rnew = cast(((x-200)*4)+200, y, b+1);
+        ray[2] = rnew[2] + 50;
+        delete [] rnew;
+    } else if(x > 300) {
+    // Hit floor.
+        ray[2] = 150;
+    } else {
+    // Hit ceiling.
+        ray[2] = 50;
+    }
+    
+    // if collide:
+    // bounce towards light source
+    // if light source:
+    // light
+    // if no collide:
+    // bg
+    
+    ray[0] = 0;
+    ray[1] = 0;
     ray[3] = 255;
     
     return ray;
 }
-
-// cast
-    // if collide:
-        // bounce towards light source
-    // if light source:
-        // light
-    // if no collide:
-        // bg

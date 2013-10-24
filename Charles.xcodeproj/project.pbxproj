@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7E5D83EA1818976C005CC665 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E5D83E91818976C005CC665 /* main.cpp */; };
+		7E17B6721818DC090080FB2A /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E17B6711818DC090080FB2A /* main.cpp */; };
+		7E17B6771818DC3B0080FB2A /* Vector3D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E17B6751818DC3B0080FB2A /* Vector3D.cpp */; };
 		7E95D5771818BC0E002B9D85 /* sfml-graphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E95D5731818BC0E002B9D85 /* sfml-graphics.framework */; };
 		7E95D5781818BC0E002B9D85 /* sfml-system.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E95D5741818BC0E002B9D85 /* sfml-system.framework */; };
 		7E95D5791818BC0E002B9D85 /* sfml-window.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E95D5751818BC0E002B9D85 /* sfml-window.framework */; };
@@ -27,8 +28,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		7E17B6711818DC090080FB2A /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = Charles/main.cpp; sourceTree = "<group>"; };
+		7E17B6751818DC3B0080FB2A /* Vector3D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Vector3D.cpp; sourceTree = "<group>"; };
+		7E17B6761818DC3B0080FB2A /* Vector3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vector3D.h; sourceTree = "<group>"; };
 		7E5D83E61818976C005CC665 /* Charles */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Charles; sourceTree = BUILT_PRODUCTS_DIR; };
-		7E5D83E91818976C005CC665 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		7E95D5731818BC0E002B9D85 /* sfml-graphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "sfml-graphics.framework"; path = "../../../../../Library/Frameworks/sfml-graphics.framework"; sourceTree = "<group>"; };
 		7E95D5741818BC0E002B9D85 /* sfml-system.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "sfml-system.framework"; path = "../../../../../Library/Frameworks/sfml-system.framework"; sourceTree = "<group>"; };
 		7E95D5751818BC0E002B9D85 /* sfml-window.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "sfml-window.framework"; path = "../../../../../Library/Frameworks/sfml-window.framework"; sourceTree = "<group>"; };
@@ -50,6 +53,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7E17B6731818DC0F0080FB2A /* Charles */ = {
+			isa = PBXGroup;
+			children = (
+				7E17B6711818DC090080FB2A /* main.cpp */,
+			);
+			name = Charles;
+			sourceTree = "<group>";
+		};
+		7E17B6741818DC190080FB2A /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				7E17B6751818DC3B0080FB2A /* Vector3D.cpp */,
+				7E17B6761818DC3B0080FB2A /* Vector3D.h */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
 		7E5D83DD1818976C005CC665 = {
 			isa = PBXGroup;
 			children = (
@@ -57,7 +77,8 @@
 				7E95D5741818BC0E002B9D85 /* sfml-system.framework */,
 				7E95D5751818BC0E002B9D85 /* sfml-window.framework */,
 				7E95D5761818BC0E002B9D85 /* SFML.framework */,
-				7E5D83E81818976C005CC665 /* Charles */,
+				7E17B6731818DC0F0080FB2A /* Charles */,
+				7E17B6741818DC190080FB2A /* Classes */,
 				7E5D83E71818976C005CC665 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -68,14 +89,6 @@
 				7E5D83E61818976C005CC665 /* Charles */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		7E5D83E81818976C005CC665 /* Charles */ = {
-			isa = PBXGroup;
-			children = (
-				7E5D83E91818976C005CC665 /* main.cpp */,
-			);
-			path = Charles;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -129,7 +142,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7E5D83EA1818976C005CC665 /* main.cpp in Sources */,
+				7E17B6721818DC090080FB2A /* main.cpp in Sources */,
+				7E17B6771818DC3B0080FB2A /* Vector3D.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
