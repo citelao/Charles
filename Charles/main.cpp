@@ -28,7 +28,7 @@ Color cast(Point3D _pos, Vector3D _uvec);
 
 int w = 400;
 int h = 400;
-sf::Uint8 *renderImage = new sf::Uint8[w * h * 4];
+unsigned char *renderImage = new unsigned char[w * h * 4];
 
 int main(int argc, const char * argv[])
 {
@@ -99,9 +99,14 @@ void render(int _x, int _y, int _w, int _h)
 
 Color cast(Point3D _pos, Vector3D _uvec)
 {
-    if (pow(_pos.x - 200, 2) + pow(_pos.y - 200,2) <= pow(100, 2)) {
-        return {255, 255, 255, 255};
-    } else {
-        return {0, 0, 0, 255};
+    // Let's create a sphere dead center of the screen.
+    // (x-200)^2+(y-200)^2+(z-200)^2 == (100)^2
+    
+    if (pow(_pos.x - 200, 2) + pow(_pos.y - 200, 2) <= pow(100, 2)) { // Ray collides with sphere.
+        
+        unsigned char g = (unsigned char) 300 - _pos.y;
+        return {255, g, 255, 255};
     }
+    
+    return {0, 0, 0, 255};
 }
