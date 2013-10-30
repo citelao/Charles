@@ -25,14 +25,14 @@ struct Color {
 };
 
 void render(int _x, int _y, int _w, int _h);
-Color cast(Point3D _pos, Vector3D _uvec);
+Color cast(Point3D _pos, Vector3D _uvec, int _a);
 
 int w = 400;
 int h = 400;
 unsigned char *renderImage = new unsigned char[w * h * 4];
 
 Point3D screenPos(- w / 2, - h / 2, 0);
-Point3D camera(0, 0, -0.3);
+Point3D camera(0, 0, -2000);
 
 int main(int argc, const char * argv[])
 {
@@ -96,7 +96,7 @@ void render(int _x, int _y, int _w, int _h)
             Vector3D v = screenPos - camera + Vector3D(cx, cy, 0);
             Vector3D uv = v / v.magnitude();
             
-            Color c = cast(*new Point3D(screenPos.x + cx, screenPos.y + cy, screenPos.z), uv);
+            Color c = cast(*new Point3D(screenPos.x + cx, screenPos.y + cy, screenPos.z), uv, cx);
             
             renderImage[((cy * w) + cx) * 4]     = c.r;
             renderImage[((cy * w) + cx) * 4 + 1] = c.g;
@@ -108,30 +108,31 @@ void render(int _x, int _y, int _w, int _h)
     std::cout << "Render thread completed! \n";
 }
 
-Color cast(Point3D _pos, Vector3D _uvec)
+Color cast(Point3D _pos, Vector3D _uv, int _a)
 {
     
     // Let's create a sphere dead center of the screen.
-    double xp = 0;
-    double yp = 0;
-    double zp = 2;
-    double r = 2;
+    double xp = 8000;
+    double yp = 8000;
+    double zp = 100000;
+    double r = 1000;
 
     // Use quadratics
-    double a = pow(_uvec.x, 2) + pow(_uvec.y, 2) + pow(_uvec.z, 2);
-    double b = 2 * ((_pos.x - xp) * _uvec.x + (_pos.y - yp) * _uvec.y + (_pos.z - zp) * _uvec.z);
+    double a = pow(_uv.x, 2) + pow(_uv.y, 2) + pow(_uv.z, 2);
+    double b = 2 * ((_pos.x - xp) * _uv.x + (_pos.y - yp) * _uv.y + (_pos.z - zp) * _uv.z);
     double c = pow(_pos.x - xp, 2) + pow(_pos.y - yp, 2) + pow(_pos.z - zp, 2) - pow(r, 2);
     
     double far = (-b + sqrt(pow(b, 2) - 4 * a * c)) / (2 * a);
     double near = (-b - sqrt(pow(b, 2) - 4 * a * c)) / (2 * a);
     
-    if(_pos.x >= -10) {
+    if(_pos.x >= -5 && _pos.y >= -5 && _pos.x <= 5 && _pos.y <= 5) {
            std::string nf;
     }
+    
     if (!isnan(near) && !isnan(far)) { // Ray collides with sphere.
         
 //        std::cout << "near: " << near << "; far: " << far << std::endl;
-        unsigned char g = (unsigned char) 255 - near;
+        unsigned char g = (unsigned char) 0;
         return {255, g, 255, 255};
     }
     

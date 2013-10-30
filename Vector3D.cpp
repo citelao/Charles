@@ -18,7 +18,7 @@ Vector3D &Vector3D::operator-(const Vector3D &nv) const {
 }
 
 Vector3D &Vector3D::operator/(const double &nv) const {
-    return *new Vector3D(this->x /nv, this->y / nv, this->z / nv);
+    return *new Vector3D(this->x / nv, this->y / nv, this->z / nv);
 }
 
 double Vector3D::magnitude(void) {
