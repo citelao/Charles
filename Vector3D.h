@@ -25,9 +25,13 @@ class Vector3D {
     Vector3D &operator+(const Vector3D &nv) const;
     Vector3D &operator-(const Vector3D &nv) const;
     
+    Vector3D &operator/(const double &nv) const;
+    
     // Dot and cross products, respectively.
     Vector3D &operator*(const Vector3D &nv) const;
     Vector3D &operator/(const Vector3D &nv) const;
+    
+    double magnitude(void);
 };
 
 #endif /* defined(__Charles__Vector3D__) */

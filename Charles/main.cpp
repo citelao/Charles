@@ -10,6 +10,7 @@
 // - http://en.sfml-dev.org/forums/index.php?topic=3543.0 (uint8 and image class)
 
 #include <iostream>
+#include <string>
 #include <thread>
 #include <math.h>
 #include <SFML/graphics.hpp>
@@ -30,9 +31,16 @@ int w = 400;
 int h = 400;
 unsigned char *renderImage = new unsigned char[w * h * 4];
 
+Point3D screenPos(- w / 2, - h / 2, 0);
+Point3D camera(0, 0, -0.3);
+
 int main(int argc, const char * argv[])
 {
     std::cout << "Go, Charles!\n";
+    
+    std::cout << "\nscreenPos: " << screenPos.x << ", ";
+    std::cout << screenPos.y << ", ";
+    std::cout << screenPos.z << ".\n";
     
     // Create window.
     sf::RenderWindow window(sf::VideoMode(w, h), "Charles");
@@ -85,7 +93,10 @@ void render(int _x, int _y, int _w, int _h)
     
     for (int cy = _y; cy < _y + _h; cy++) {
         for (int cx = _x; cx < _x + _w; cx++ ) {
-            Color c = cast(*new Point3D(cx, cy, 0), *new Vector3D());
+            Vector3D v = screenPos - camera + Vector3D(cx, cy, 0);
+            Vector3D uv = v / v.magnitude();
+            
+            Color c = cast(*new Point3D(screenPos.x + cx, screenPos.y + cy, screenPos.z), uv);
             
             renderImage[((cy * w) + cx) * 4]     = c.r;
             renderImage[((cy * w) + cx) * 4 + 1] = c.g;
@@ -99,12 +110,28 @@ void render(int _x, int _y, int _w, int _h)
 
 Color cast(Point3D _pos, Vector3D _uvec)
 {
-    // Let's create a sphere dead center of the screen.
-    // (x-200)^2+(y-200)^2+(z-200)^2 == (100)^2
     
-    if (pow(_pos.x - 200, 2) + pow(_pos.y - 200, 2) <= pow(100, 2)) { // Ray collides with sphere.
+    // Let's create a sphere dead center of the screen.
+    double xp = 0;
+    double yp = 0;
+    double zp = 2;
+    double r = 2;
+
+    // Use quadratics
+    double a = pow(_uvec.x, 2) + pow(_uvec.y, 2) + pow(_uvec.z, 2);
+    double b = 2 * ((_pos.x - xp) * _uvec.x + (_pos.y - yp) * _uvec.y + (_pos.z - zp) * _uvec.z);
+    double c = pow(_pos.x - xp, 2) + pow(_pos.y - yp, 2) + pow(_pos.z - zp, 2) - pow(r, 2);
+    
+    double far = (-b + sqrt(pow(b, 2) - 4 * a * c)) / (2 * a);
+    double near = (-b - sqrt(pow(b, 2) - 4 * a * c)) / (2 * a);
+    
+    if(_pos.x >= -10) {
+           std::string nf;
+    }
+    if (!isnan(near) && !isnan(far)) { // Ray collides with sphere.
         
-        unsigned char g = (unsigned char) 300 - _pos.y;
+//        std::cout << "near: " << near << "; far: " << far << std::endl;
+        unsigned char g = (unsigned char) 255 - near;
         return {255, g, 255, 255};
     }
     
