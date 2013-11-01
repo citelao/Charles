@@ -27,12 +27,12 @@ struct Color {
 void render(int _x, int _y, int _w, int _h);
 Color cast(Point3D _pos, Vector3D _uvec);
 
-int w = 400;
-int h = 400;
+int w = 1200;
+int h = 800;
 unsigned char *renderImage = new unsigned char[w * h * 4];
 
 Point3D screenPos(- w / 2, - h / 2, 0);
-Point3D camera(0, 0, - 5 * w);
+Point3D camera(0, 0, - 450);
 
 int main(int argc, const char * argv[])
 {
@@ -137,27 +137,25 @@ Color cast(Point3D _p, Vector3D _uv)
 {
     
     // Let's create a sphere dead center of the screen.
-    double xp = 0;
-    double yp = 0;
-    double zp = 100;
-    double r = 80;
-
-    // Use the quadratic equation to solve for sphere intersection.
-    double a = pow(_uv.x, 2) + pow(_uv.y, 2) + pow(_uv.z, 2);
-    double b = 2 * ((_p.x - xp) * _uv.x + (_p.y - yp) * _uv.y + (_p.z - zp) * _uv.z);
-    double c = pow(_p.x - xp, 2) + pow(_p.y - yp, 2) + pow(_p.z - zp, 2) - pow(r, 2);
+    double xp = 200;
+    double r = 50;
     
-    double far = (-b + sqrt(pow(b, 2) - 4 * a * c)) / (2 * a);
-    double near = (-b - sqrt(pow(b, 2) - 4 * a * c)) / (2 * a);
-    
-    if(_p.x >= -5 && _p.y >= -5 && _p.x <= 5 && _p.y <= 5) {
-           std::string nf;
-    }
-    
-    if (!isnan(near) && !isnan(far)) { // Ray collides with sphere.
+    for (double zp = 100; zp <= 3000; zp += 800) {
+    for (double yp = -600; yp <= 1000; yp += 300) {
+        // Use the quadratic equation to solve for sphere intersection.
+        double a = pow(_uv.x, 2) + pow(_uv.y, 2) + pow(_uv.z, 2);
+        double b = 2 * ((_p.x - xp) * _uv.x + (_p.y - yp) * _uv.y + (_p.z - zp) * _uv.z);
+        double c = pow(_p.x - xp, 2) + pow(_p.y - yp, 2) + pow(_p.z - zp, 2) - pow(r, 2);
         
-        unsigned char g = (unsigned char) 0;
-        return {255, g, 255, 255};
+        double far = (-b + sqrt(pow(b, 2) - 4 * a * c)) / (2 * a);
+        double near = (-b - sqrt(pow(b, 2) - 4 * a * c)) / (2 * a);
+        
+        if (!isnan(near) && !isnan(far)) { // Ray collides with sphere.
+            
+            unsigned char g = (unsigned char) 0;
+            return {255, g, (unsigned char) zp, 255};
+        }
+    }
     }
     
     return {0, 0, 0, 255};
