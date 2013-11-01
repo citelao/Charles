@@ -14,9 +14,15 @@
 #include <thread>
 #include <math.h>
 #include <SFML/graphics.hpp>
+#include <vector>
 #include "Vector3D.h"
 #include "Point3D.h"
+#include "Sphere.h"
+#include "Light.h"
 
+/**
+ * The ever-useful color struct
+ **/
 struct Color {
         unsigned char r;
         unsigned char g;
@@ -24,34 +30,59 @@ struct Color {
         unsigned char a;
 };
 
+/**
+ * Define them variables.
+ **/
+int w = 512;
+int h = 512;
+unsigned char *renderImage = new unsigned char[w * h * 4];
+
+Point3D screenPos(- w / 2, - h / 2, 0); // TODO, since we use projection now.
+Point3D camera(0, 0, - 500);
+
+std::vector<Sphere> spheres {};
+std::vector<Light> lights {};
+
+/**
+ * Function time!
+ **/
 void render(int _x, int _y, int _w, int _h);
 Color cast(Point3D _pos, Vector3D _uvec);
 
-int w = 1200;
-int h = 800;
-unsigned char *renderImage = new unsigned char[w * h * 4];
-
-Point3D screenPos(- w / 2, - h / 2, 0);
-Point3D camera(0, 0, - 450);
-
+/**
+ * BEGIN THE PROGRAM
+ **/
 int main(int argc, const char * argv[])
 {
     std::cout << "Go, Charles!\n";
     
-    std::cout << "\nscreenPos: " << screenPos.x << ", ";
-    std::cout << screenPos.y << ", ";
-    std::cout << screenPos.z << ".\n";
+    // Make spheres. Lots of spheres.
+    double _r = 40;
+    for (double _zp =  100; _zp <= 3000; _zp += 800) {
+        for (double _xp = -200; _xp <= 200; _xp += 200) {
+            for (double _yp = -200; _yp <= 200; _yp += 200) {
+                //double i = rand() % 400 - 200;
+                double _i = 0;
+                spheres.push_back(Sphere(_xp + _i, _yp + _i, _zp + _i, _r));
+            }
+        }
+    }
     
-    // Create window.
+    // Light 'em up.
+    lights.push_back(Light(0, - 300, 200, 500));
+    
+    // Create window
     sf::RenderWindow window(sf::VideoMode(w, h), "Charles");
     
     // Instantiate texture and sprite.
-    sf::Texture renderTexture;
-    sf::Sprite renderSprite;
+    sf::Texture texture;
+    sf::Sprite sprite;
+    texture.create(w, h);
     
-    renderTexture.create(w, h);
-    
-    // Start render threads.
+    /** 
+     * Start render threads.
+     * One for each quarter of the screen.
+     **/
     std::thread rt1(&render, 0, 0, w/2, h/2);
     std::thread rt2(&render, w/2, 0, w/2, h/2);
     std::thread rt3(&render, 0, h/2, w/2, h/2);
@@ -76,11 +107,11 @@ int main(int argc, const char * argv[])
         window.clear(sf::Color::Black);
         
         // Set texture to unsigned char array rendered to.
-        renderTexture.update(renderImage);
-        renderSprite.setTexture(renderTexture);
+        texture.update(renderImage);
+        sprite.setTexture(texture);
         
         // Display the frame
-        window.draw(renderSprite);
+        window.draw(sprite);
         window.display();
     }
     
@@ -100,6 +131,11 @@ void render(int _x, int _y, int _w, int _h)
              ****
              * Screen is stored mathematically as top-left corner of screen rectangle, which
              * needs to be transformed into a sphere. See math projection.
+             * See:
+             * - http://en.wikipedia.org/wiki/Curvilinear_perspective
+             * - http://en.wikipedia.org/wiki/3D_projection
+             * - http://en.wikipedia.org/wiki/Camera_matrix
+             * - and the book
              **/
             
             // Use the 3D Pythagorean theorem: h**2 = x**2 + y**2 + z**2
@@ -115,14 +151,10 @@ void render(int _x, int _y, int _w, int _h)
             // And make it a unit vector.
             Vector3D uv = v / v.magnitude();
             
-            /**
-             * Cast a ray from the screen point in the newly calculated direction.
-             **/
+            // Cast a ray from the screen point in the newly calculated direction.
             Color c = cast(*new Point3D(screenPos.x + cx, screenPos.y + cy, screenPos.z), uv);
             
-            /**
-             * Write the RGBA codes to the unsigned char array
-             **/
+            // Write the RGBA codes to the unsigned char array.
             renderImage[((cy * w) + cx) * 4]     = c.r;
             renderImage[((cy * w) + cx) * 4 + 1] = c.g;
             renderImage[((cy * w) + cx) * 4 + 2] = c.b;
@@ -133,29 +165,33 @@ void render(int _x, int _y, int _w, int _h)
     std::cout << "Render thread completed! \n";
 }
 
-Color cast(Point3D _p, Vector3D _uv)
+/**
+ * Cast a ray from a _point with direction _versor
+ **/
+Color cast(Point3D _point, Vector3D _uv)
 {
-    
-    // Let's create a sphere dead center of the screen.
-    double xp = 200;
-    double r = 50;
-    
-    for (double zp = 100; zp <= 3000; zp += 800) {
-    for (double yp = -600; yp <= 1000; yp += 300) {
+    for (int i = 0; i <= spheres.size(); i++) {
+        Sphere _sphere = spheres[i];
+        
         // Use the quadratic equation to solve for sphere intersection.
         double a = pow(_uv.x, 2) + pow(_uv.y, 2) + pow(_uv.z, 2);
-        double b = 2 * ((_p.x - xp) * _uv.x + (_p.y - yp) * _uv.y + (_p.z - zp) * _uv.z);
-        double c = pow(_p.x - xp, 2) + pow(_p.y - yp, 2) + pow(_p.z - zp, 2) - pow(r, 2);
+        double b = 2 * ((_point.x - _sphere.center.x) * _uv.x + (_point.y - _sphere.center.y) * _uv.y + (_point.z - _sphere.center.z) * _uv.z);
+        double c = pow(_point.x - _sphere.center.x, 2) + pow(_point.y - _sphere.center.y, 2) + pow(_point.z - _sphere.center.z, 2) - pow(_sphere.radius, 2);
         
         double far = (-b + sqrt(pow(b, 2) - 4 * a * c)) / (2 * a);
         double near = (-b - sqrt(pow(b, 2) - 4 * a * c)) / (2 * a);
         
         if (!isnan(near) && !isnan(far)) { // Ray collides with sphere.
             
+            // Send out a shadow ray
+            // Send out a reflection ray
+            // Send out a refraction ray
+            
+            // Color!
+            
             unsigned char g = (unsigned char) 0;
-            return {255, g, (unsigned char) zp, 255};
+            return {255, g, (unsigned char) _sphere.center.z, 255};
         }
-    }
     }
     
     return {0, 0, 0, 255};

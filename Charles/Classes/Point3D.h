@@ -20,8 +20,6 @@ public:
     
     Point3D(double x = 0, double y = 0, double z = 0): x(x), y(y), z(z) {};
     
-    Vector3D minus(const Point3D &np) const;
-    
     Vector3D &operator-(const Point3D &np) const;
 };
 
