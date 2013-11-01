@@ -14,6 +14,10 @@
 		7E95D5781818BC0E002B9D85 /* sfml-system.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E95D5741818BC0E002B9D85 /* sfml-system.framework */; };
 		7E95D5791818BC0E002B9D85 /* sfml-window.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E95D5751818BC0E002B9D85 /* sfml-window.framework */; };
 		7E95D57A1818BC0E002B9D85 /* SFML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E95D5761818BC0E002B9D85 /* SFML.framework */; };
+		7ED3A511182468E700EABE3B /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ED3A510182468E700EABE3B /* main.cpp */; };
+		7ED3A513182468E700EABE3B /* Test.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7ED3A512182468E700EABE3B /* Test.1 */; };
+		7ED3A51B182469AC00EABE3B /* Light.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ED3A517182469AC00EABE3B /* Light.cpp */; };
+		7ED3A51C182469AC00EABE3B /* Sphere.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ED3A519182469AC00EABE3B /* Sphere.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -23,6 +27,16 @@
 			dstPath = /usr/share/man/man1/;
 			dstSubfolderSpec = 0;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		7ED3A50C182468E700EABE3B /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+				7ED3A513182468E700EABE3B /* Test.1 in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
@@ -40,6 +54,13 @@
 		7E95D5741818BC0E002B9D85 /* sfml-system.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "sfml-system.framework"; path = "../../../../../Library/Frameworks/sfml-system.framework"; sourceTree = "<group>"; };
 		7E95D5751818BC0E002B9D85 /* sfml-window.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "sfml-window.framework"; path = "../../../../../Library/Frameworks/sfml-window.framework"; sourceTree = "<group>"; };
 		7E95D5761818BC0E002B9D85 /* SFML.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SFML.framework; path = ../../../../../Library/Frameworks/SFML.framework; sourceTree = "<group>"; };
+		7ED3A50E182468E700EABE3B /* Test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Test; sourceTree = BUILT_PRODUCTS_DIR; };
+		7ED3A510182468E700EABE3B /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		7ED3A512182468E700EABE3B /* Test.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = Test.1; sourceTree = "<group>"; };
+		7ED3A517182469AC00EABE3B /* Light.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Light.cpp; sourceTree = "<group>"; };
+		7ED3A518182469AC00EABE3B /* Light.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Light.h; sourceTree = "<group>"; };
+		7ED3A519182469AC00EABE3B /* Sphere.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Sphere.cpp; sourceTree = "<group>"; };
+		7ED3A51A182469AC00EABE3B /* Sphere.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sphere.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,6 +72,13 @@
 				7E95D5781818BC0E002B9D85 /* sfml-system.framework in Frameworks */,
 				7E95D5791818BC0E002B9D85 /* sfml-window.framework in Frameworks */,
 				7E95D57A1818BC0E002B9D85 /* SFML.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7ED3A50B182468E700EABE3B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -68,12 +96,17 @@
 		7E17B6741818DC190080FB2A /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				7ED3A517182469AC00EABE3B /* Light.cpp */,
+				7ED3A518182469AC00EABE3B /* Light.h */,
+				7ED3A519182469AC00EABE3B /* Sphere.cpp */,
+				7ED3A51A182469AC00EABE3B /* Sphere.h */,
 				7E17B6751818DC3B0080FB2A /* Vector3D.cpp */,
 				7E17B6761818DC3B0080FB2A /* Vector3D.h */,
 				7E37B611181F78EA000C8A03 /* Point3D.cpp */,
 				7E37B612181F78EA000C8A03 /* Point3D.h */,
 			);
 			name = Classes;
+			path = Charles/Classes;
 			sourceTree = "<group>";
 		};
 		7E5D83DD1818976C005CC665 = {
@@ -85,6 +118,7 @@
 				7E95D5761818BC0E002B9D85 /* SFML.framework */,
 				7E17B6731818DC0F0080FB2A /* Charles */,
 				7E17B6741818DC190080FB2A /* Classes */,
+				7ED3A50F182468E700EABE3B /* Test */,
 				7E5D83E71818976C005CC665 /* Products */,
 				7E7F0B8B18230D7100D21D7D /* Info.plist */,
 			);
@@ -94,8 +128,18 @@
 			isa = PBXGroup;
 			children = (
 				7E5D83E61818976C005CC665 /* Charles */,
+				7ED3A50E182468E700EABE3B /* Test */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		7ED3A50F182468E700EABE3B /* Test */ = {
+			isa = PBXGroup;
+			children = (
+				7ED3A510182468E700EABE3B /* main.cpp */,
+				7ED3A512182468E700EABE3B /* Test.1 */,
+			);
+			path = Test;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -116,6 +160,23 @@
 			name = Charles;
 			productName = Charles;
 			productReference = 7E5D83E61818976C005CC665 /* Charles */;
+			productType = "com.apple.product-type.tool";
+		};
+		7ED3A50D182468E700EABE3B /* Test */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7ED3A516182468E700EABE3B /* Build configuration list for PBXNativeTarget "Test" */;
+			buildPhases = (
+				7ED3A50A182468E700EABE3B /* Sources */,
+				7ED3A50B182468E700EABE3B /* Frameworks */,
+				7ED3A50C182468E700EABE3B /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Test;
+			productName = Test;
+			productReference = 7ED3A50E182468E700EABE3B /* Test */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -140,6 +201,7 @@
 			projectRoot = "";
 			targets = (
 				7E5D83E51818976C005CC665 /* Charles */,
+				7ED3A50D182468E700EABE3B /* Test */,
 			);
 		};
 /* End PBXProject section */
@@ -151,7 +213,17 @@
 			files = (
 				7E17B6721818DC090080FB2A /* main.cpp in Sources */,
 				7E37B613181F78EA000C8A03 /* Point3D.cpp in Sources */,
+				7ED3A51B182469AC00EABE3B /* Light.cpp in Sources */,
+				7ED3A51C182469AC00EABE3B /* Sphere.cpp in Sources */,
 				7E17B6771818DC3B0080FB2A /* Vector3D.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7ED3A50A182468E700EABE3B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7ED3A511182468E700EABE3B /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -260,6 +332,24 @@
 			};
 			name = Release;
 		};
+		7ED3A514182468E700EABE3B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		7ED3A515182468E700EABE3B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -280,6 +370,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		7ED3A516182468E700EABE3B /* Build configuration list for PBXNativeTarget "Test" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7ED3A514182468E700EABE3B /* Debug */,
+				7ED3A515182468E700EABE3B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};

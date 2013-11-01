@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "7E0839E6182467F100444A87"
-               BuildableName = "CharlesTest"
-               BlueprintName = "CharlesTest"
+               BlueprintIdentifier = "7ED3A50D182468E700EABE3B"
+               BuildableName = "Test"
+               BlueprintName = "Test"
                ReferencedContainer = "container:Charles.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -32,9 +32,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "7E0839E6182467F100444A87"
-            BuildableName = "CharlesTest"
-            BlueprintName = "CharlesTest"
+            BlueprintIdentifier = "7ED3A50D182468E700EABE3B"
+            BuildableName = "Test"
+            BlueprintName = "Test"
             ReferencedContainer = "container:Charles.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -51,9 +51,9 @@
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "7E0839E6182467F100444A87"
-            BuildableName = "CharlesTest"
-            BlueprintName = "CharlesTest"
+            BlueprintIdentifier = "7ED3A50D182468E700EABE3B"
+            BuildableName = "Test"
+            BlueprintName = "Test"
             ReferencedContainer = "container:Charles.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -69,9 +69,9 @@
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "7E0839E6182467F100444A87"
-            BuildableName = "CharlesTest"
-            BlueprintName = "CharlesTest"
+            BlueprintIdentifier = "7ED3A50D182468E700EABE3B"
+            BuildableName = "Test"
+            BlueprintName = "Test"
             ReferencedContainer = "container:Charles.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
