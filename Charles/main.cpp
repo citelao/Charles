@@ -47,7 +47,8 @@ std::vector<Light> lights {};
  * Function time!
  **/
 void render(int _x, int _y, int _w, int _h);
-Color cast(Point3D _pos, Vector3D _uvec);
+Color cast(Point3D _pos, Vector3D _uvec, int _bounces = 0);
+//Color cast(Point3D _pos, Vector3D _uvec);
 
 /**
  * BEGIN THE PROGRAM
@@ -60,7 +61,7 @@ int main(int argc, const char * argv[])
     double _r = 40;
     for (double _zp =  100; _zp <= 3000; _zp += 800) {
         for (double _xp = -200; _xp <= 200; _xp += 200) {
-            for (double _yp = -200; _yp <= 200; _yp += 200) {
+            for (double _yp = -400; _yp <= 400; _yp += 100) {
                 //double i = rand() % 400 - 200;
                 double _i = 0;
                 spheres.push_back(Sphere(_xp + _i, _yp + _i, _zp + _i, _r));
@@ -168,8 +169,12 @@ void render(int _x, int _y, int _w, int _h)
 /**
  * Cast a ray from a _point with direction _versor
  **/
-Color cast(Point3D _point, Vector3D _uv)
+Color cast(Point3D _point, Vector3D _uv, int _bounces)
 {
+    if (_bounces >= 3) {
+        return Color{0, 0, 0, 255};
+    }
+    
     for (int i = 0; i <= spheres.size(); i++) {
         Sphere _sphere = spheres[i];
         
@@ -183,16 +188,22 @@ Color cast(Point3D _point, Vector3D _uv)
         
         if (!isnan(near) && !isnan(far)) { // Ray collides with sphere.
             
+            // Calcuate collision point & normal
+            Point3D collision = _point + _uv * near;
+            
             // Send out a shadow ray
+//            Color s = cast(collision, lights[0].center - collision);
             // Send out a reflection ray
+            // cast(contactpt, normal, _bounces + 1);
             // Send out a refraction ray
+            // cast(contactpt, _uv * diff, _bounces + 1);
             
             // Color!
             
             unsigned char g = (unsigned char) 0;
-            return {255, g, (unsigned char) _sphere.center.z, 255};
+            return Color{255, g, (unsigned char) ((-collision.y - h / 2) / 2), 255};
         }
     }
     
-    return {0, 0, 0, 255};
+    return Color{0, 0, 0, 255};
 }

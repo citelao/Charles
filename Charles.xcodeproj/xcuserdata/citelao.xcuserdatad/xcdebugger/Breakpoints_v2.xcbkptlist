@@ -6,16 +6,62 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Charles/main.cpp"
+            timestampString = "405039825.631959"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "126"
+            endingLineNumber = "126"
+            landmarkName = "render(int _x, int _y, int _w, int _h)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "render(int, int, int, int)"
+                  moduleName = "Charles"
+                  urlString = "file:///Users/citelao/Projects/Charles/Charles/main.cpp"
+                  timestampString = "405040196.7675"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "128"
+                  endingLineNumber = "128"
+                  offsetFromSymbolStart = "48">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "render(int, int, int, int)"
+                  moduleName = "Charles"
+                  urlString = "file:///Users/citelao/Projects/Charles/Charles/main.cpp"
+                  timestampString = "405040196.772071"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "128"
+                  endingLineNumber = "128"
+                  offsetFromSymbolStart = "901">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Charles/main.cpp"
-            timestampString = "404854497.531518"
+            timestampString = "405040325.854023"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "125"
-            endingLineNumber = "125"
-            landmarkName = "render(int _x, int _y, int _w, int _h)"
+            startingLineNumber = "196"
+            endingLineNumber = "196"
+            landmarkName = "cast(Point3D _point, Vector3D _uv, int _bounces)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
