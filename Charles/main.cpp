@@ -59,7 +59,7 @@ int main(int argc, const char * argv[])
     
     // Make spheres. Lots of spheres.
     double _r = 40;
-    for (double _zp =  100; _zp <= 3000; _zp += 800) {
+    for (double _zp =  100; _zp <= 3000; _zp += 200) {
         for (double _xp = -200; _xp <= 200; _xp += 200) {
             for (double _yp = -400; _yp <= 400; _yp += 100) {
                 //double i = rand() % 400 - 200;
@@ -70,7 +70,7 @@ int main(int argc, const char * argv[])
     }
     
     // Light 'em up.
-    lights.push_back(Light(0, - 300, 200, 500));
+    lights.push_back(Light(-12, 0, 0, 400));
     
     // Create window
     sf::RenderWindow window(sf::VideoMode(w, h), "Charles");
@@ -147,10 +147,8 @@ void render(int _x, int _y, int _w, int _h)
               - pow(screenPos.y - camera.y + cy, 2)
             );
             
-            // Create a vector from origin to spherical screenspace.
-            Vector3D v = screenPos - camera + Vector3D(cx, cy, sphereZ);
-            // And make it a unit vector.
-            Vector3D uv = v / v.magnitude();
+            // Create a vector from origin to spherical screenspace and make it a unit vector.
+            Vector3D uv = (screenPos - camera + Vector3D(cx, cy, sphereZ)).unit();
             
             // Cast a ray from the screen point in the newly calculated direction.
             Color c = cast(*new Point3D(screenPos.x + cx, screenPos.y + cy, screenPos.z), uv);
@@ -190,9 +188,12 @@ Color cast(Point3D _point, Vector3D _uv, int _bounces)
             
             // Calcuate collision point & normal
             Point3D collision = _point + _uv * near;
+            Vector3D normal = collision - _sphere.center;
             
             // Send out a shadow ray
-//            Color s = cast(collision, lights[0].center - collision);
+            Vector3D lr = collision - lights[0].center;
+//            Vector3D x = lr * normal;
+            
             // Send out a reflection ray
             // cast(contactpt, normal, _bounces + 1);
             // Send out a refraction ray
@@ -201,7 +202,13 @@ Color cast(Point3D _point, Vector3D _uv, int _bounces)
             // Color!
             
             unsigned char g = (unsigned char) 0;
-            return Color{255, g, (unsigned char) ((-collision.y - h / 2) / 2), 255};
+            double b = (lights[0].intensity - lr.magnitude()) / lights[0].intensity * 255;
+            
+            if (b >= 255 || b <= 0) {
+                return Color{0, 0, 0, 255};
+            } else {
+                return Color{(unsigned char) b, g, (unsigned char) b, 255};
+            }
         }
     }
     

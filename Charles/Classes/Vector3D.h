@@ -32,7 +32,8 @@ class Vector3D {
     Vector3D &operator*(const Vector3D &nv) const;
     Vector3D &operator/(const Vector3D &nv) const;
     
-    double magnitude(void);
+    double magnitude(void) const;
+    Vector3D unit(void) const;
 };
 
 #endif /* defined(__Charles__Vector3D__) */

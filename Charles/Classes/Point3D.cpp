@@ -15,3 +15,4 @@ Vector3D &Point3D::operator-(const Point3D &np) const {
 Point3D &Point3D::operator+(const Vector3D &v) const {
     return *new Point3D(this->x + v.x, this->y + v.y, this->z + v.z);
 }
+
