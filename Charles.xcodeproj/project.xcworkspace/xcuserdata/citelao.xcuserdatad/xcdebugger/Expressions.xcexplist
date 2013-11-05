@@ -6,6 +6,14 @@
          contextName = "Vector3D::magnitude():Vector3D.cpp">
       </ContextState>
       <ContextState
+         contextName = "cast(Point3D, Vector3D, int):main.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "cross - ">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "main:main.cpp">
          <PersistentStrings>
             <PersistentString

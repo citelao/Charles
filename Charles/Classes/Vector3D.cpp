@@ -29,10 +29,10 @@ Vector3D &Vector3D::operator*(const double &nv) const
     return *new Vector3D(this->x * nv, this->y * nv, this->z * nv);
 }
 
-// Cross product.
-Vector3D &Vector3D::operator*(const Vector3D &nv) const
+// Dot product.
+double Vector3D::operator*(const Vector3D &nv) const
 {
-    return *new Vector3D(this->x * nv.x, this->y * nv.y, this->z * nv.z);
+    return this->x * nv.x + this->y * nv.y + this->z * nv.z;
 }
 
 double Vector3D::magnitude(void) const

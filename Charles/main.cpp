@@ -33,6 +33,8 @@ struct Color {
 /**
  * Define them variables.
  **/
+bool debug = false;
+
 int w = 512;
 int h = 512;
 unsigned char *renderImage = new unsigned char[w * h * 4];
@@ -48,7 +50,6 @@ std::vector<Light> lights {};
  **/
 void render(int _x, int _y, int _w, int _h);
 Color cast(Point3D _pos, Vector3D _uvec, int _bounces = 0);
-//Color cast(Point3D _pos, Vector3D _uvec);
 
 /**
  * BEGIN THE PROGRAM
@@ -59,18 +60,21 @@ int main(int argc, const char * argv[])
     
     // Make spheres. Lots of spheres.
     double _r = 40;
-    for (double _zp =  100; _zp <= 3000; _zp += 200) {
+    for (double _zp =  100; _zp <= 600; _zp += 200) {
         for (double _xp = -200; _xp <= 200; _xp += 200) {
             for (double _yp = -400; _yp <= 400; _yp += 100) {
-                //double i = rand() % 400 - 200;
+                // double _i = rand() % 400 - 200;
                 double _i = 0;
                 spheres.push_back(Sphere(_xp + _i, _yp + _i, _zp + _i, _r));
             }
         }
     }
     
+    // Quicksort z order.
+    // TODO
+    
     // Light 'em up.
-    lights.push_back(Light(-12, 0, 0, 400));
+    lights.push_back(Light(-100, 20, 150, 10));
     
     // Create window
     sf::RenderWindow window(sf::VideoMode(w, h), "Charles");
@@ -190,25 +194,39 @@ Color cast(Point3D _point, Vector3D _uv, int _bounces)
             Point3D collision = _point + _uv * near;
             Vector3D normal = collision - _sphere.center;
             
-            // Send out a shadow ray
-            Vector3D lr = collision - lights[0].center;
-//            Vector3D x = lr * normal;
+            // Send out a light ray
+            Vector3D light = collision - lights[0].center;
+            double cross = light * normal;
             
+            // Send out a shadow ray
             // Send out a reflection ray
             // cast(contactpt, normal, _bounces + 1);
             // Send out a refraction ray
             // cast(contactpt, _uv * diff, _bounces + 1);
             
             // Color!
+            double rangeness = 1 / sqrt(light.magnitude()) * lights[0].intensity;
             
-            unsigned char g = (unsigned char) 0;
-            double b = (lights[0].intensity - lr.magnitude()) / lights[0].intensity * 255;
-            
-            if (b >= 255 || b <= 0) {
-                return Color{0, 0, 0, 255};
-            } else {
-                return Color{(unsigned char) b, g, (unsigned char) b, 255};
+            if (rangeness <= 0) {
+                unsigned char g = (unsigned char) (debug) ? 255 : 0;
+                return Color{0, g, 0, 255};
             }
+            
+            double fluxness = - cross;
+            
+            if (fluxness <= 0) {
+                unsigned char r = (unsigned char) (debug) ? 255 : 0;
+                return Color{r, 0, 0, 255};
+            }
+            
+            double b = rangeness * 255;
+            
+            if ( b > 255) {
+                b = 255;
+            }
+//            } else {
+                return Color{(unsigned char) b, (unsigned char) 0, (unsigned char) b, 255};
+//            }
         }
     }
     
