@@ -9,24 +9,24 @@
 #include <math.h>
 #include "Vector3D.h"
 
-Vector3D &Vector3D::operator+(const Vector3D &nv) const
+Vector3D Vector3D::operator+(const Vector3D &nv) const
 {
-    return *new Vector3D(this->x + nv.x, this->y + nv.y, this->z + nv.z);
+    return Vector3D(this->x + nv.x, this->y + nv.y, this->z + nv.z);
 }
 
-Vector3D &Vector3D::operator-(const Vector3D &nv) const
+Vector3D Vector3D::operator-(const Vector3D &nv) const
 {
-    return *new Vector3D(this->x - nv.x, this->y - nv.y, this->z - nv.z);
+    return Vector3D(this->x - nv.x, this->y - nv.y, this->z - nv.z);
 }
 
-Vector3D &Vector3D::operator/(const double &nv) const
+Vector3D Vector3D::operator/(const double &nv) const
 {
-    return *new Vector3D(this->x / nv, this->y / nv, this->z / nv);
+    return Vector3D(this->x / nv, this->y / nv, this->z / nv);
 }
 
-Vector3D &Vector3D::operator*(const double &nv) const
+Vector3D Vector3D::operator*(const double &nv) const
 {
-    return *new Vector3D(this->x * nv, this->y * nv, this->z * nv);
+    return Vector3D(this->x * nv, this->y * nv, this->z * nv);
 }
 
 // Dot product.

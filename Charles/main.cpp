@@ -34,6 +34,7 @@ struct Color {
  * Define them variables.
  **/
 bool debug = false;
+int threads;
 
 int w = 512;
 int h = 512;
@@ -49,7 +50,7 @@ std::vector<Light> lights {};
  * Function time!
  **/
 void render(int _x, int _y, int _w, int _h);
-Color cast(Point3D _pos, Vector3D _uvec, int _bounces = 0);
+Color cast(const Point3D &_point, const Vector3D &_uv, int _bounces = 0);
 
 /**
  * BEGIN THE PROGRAM
@@ -60,9 +61,9 @@ int main(int argc, const char * argv[])
     
     // Make spheres. Lots of spheres.
     double _r = 40;
-    for (double _zp =  100; _zp <= 1600; _zp += 300) {
-        for (double _xp = -400; _xp <= 400; _xp += 200) {
-            for (double _yp = -400; _yp <= 400; _yp += 100) {
+    for (double _zp =  80; _zp <= 6800; _zp += 80) {
+        for (double _xp = -400; _xp <= 400; _xp += 80) {
+            for (double _yp = -400; _yp <= 400; _yp += 80) {
                 // double _i = rand() % 400 - 200;
                 double _i = 0;
                 spheres.push_back(Sphere(_xp + _i, _yp + _i, _zp + _i, _r));
@@ -88,6 +89,7 @@ int main(int argc, const char * argv[])
      * Start render threads.
      * One for each quarter of the screen.
      **/
+    threads = 4;
     std::thread rt1(&render, 0, 0, w/2, h/2);
     std::thread rt2(&render, w/2, 0, w/2, h/2);
     std::thread rt3(&render, 0, h/2, w/2, h/2);
@@ -96,6 +98,11 @@ int main(int argc, const char * argv[])
     rt2.detach();
     rt3.detach();
     rt4.detach();
+    
+    /**
+     * Sensible optimization
+     **/
+    window.setFramerateLimit(10);
     
     while(window.isOpen())
     {
@@ -108,16 +115,22 @@ int main(int argc, const char * argv[])
                 window.close();
         }
         
-        // Clear screen.
-        window.clear(sf::Color::Black);
-        
-        // Set texture to unsigned char array rendered to.
-        texture.update(renderImage);
-        sprite.setTexture(texture);
-        
-        // Display the frame
-        window.draw(sprite);
-        window.display();
+        if(threads > -1)
+        {
+            if(threads == 0)
+                threads--;
+            
+            // Clear screen.
+            window.clear(sf::Color::Black);
+            
+            // Set texture to unsigned char array rendered to.
+            texture.update(renderImage);
+            sprite.setTexture(texture);
+            
+            // Display the frame
+            window.draw(sprite);
+            window.display();
+        }
     }
     
     return 0;
@@ -126,6 +139,12 @@ int main(int argc, const char * argv[])
 void render(int _x, int _y, int _w, int _h)
 {
     std::cout << "Render thread started! \n";
+    
+    double szz = screenPos.z - camera.z;
+    double szx = screenPos.x - camera.x;
+    double szy = screenPos.y - camera.y;
+    
+    Vector3D scv = screenPos - camera;
     
     // For each row from starting row to height,
     // scan through each column from starting col to width.
@@ -146,16 +165,18 @@ void render(int _x, int _y, int _w, int _h)
             // Use the 3D Pythagorean theorem: h**2 = x**2 + y**2 + z**2
             // or (since we know the hypotenuse), sqrt(h**2 - x**2 - y**2) = z
             double sphereZ = sqrt(
-                pow(screenPos.z - camera.z, 2)
-              - pow(screenPos.x - camera.x + cx, 2)
-              - pow(screenPos.y - camera.y + cy, 2)
+                pow(szz, 2)
+              - pow(szx + cx, 2)
+              - pow(szy + cy, 2)
             );
             
             // Create a vector from origin to spherical screenspace and make it a unit vector.
-            Vector3D uv = (screenPos - camera + Vector3D(cx, cy, sphereZ)).unit();
+            Vector3D uv = (scv + Vector3D(cx, cy, sphereZ)).unit();
+            
+            Point3D p = Point3D(screenPos.x + cx, screenPos.y + cy, screenPos.z);
             
             // Cast a ray from the screen point in the newly calculated direction.
-            Color c = cast(*new Point3D(screenPos.x + cx, screenPos.y + cy, screenPos.z), uv);
+            Color c = cast(p, uv);
             
             // Write the RGBA codes to the unsigned char array.
             renderImage[((cy * w) + cx) * 4]     = c.r;
@@ -165,13 +186,15 @@ void render(int _x, int _y, int _w, int _h)
         }
     }
     
+    threads--;
+    
     std::cout << "Render thread completed! \n";
 }
 
 /**
  * Cast a ray from a _point with direction _versor
  **/
-Color cast(Point3D _point, Vector3D _uv, int _bounces)
+Color cast(const Point3D &_point, const Vector3D &_uv, int _bounces)
 {
     if (_bounces >= 3) {
         return Color{0, 0, 0, 255};
@@ -185,10 +208,10 @@ Color cast(Point3D _point, Vector3D _uv, int _bounces)
         double b = 2 * ((_point.x - _sphere.center.x) * _uv.x + (_point.y - _sphere.center.y) * _uv.y + (_point.z - _sphere.center.z) * _uv.z);
         double c = pow(_point.x - _sphere.center.x, 2) + pow(_point.y - _sphere.center.y, 2) + pow(_point.z - _sphere.center.z, 2) - pow(_sphere.radius, 2);
         
-        double far = (-b + sqrt(pow(b, 2) - 4 * a * c)) / (2 * a);
+        // double far = (-b + sqrt(pow(b, 2) - 4 * a * c)) / (2 * a);
         double near = (-b - sqrt(pow(b, 2) - 4 * a * c)) / (2 * a);
         
-        if (!isnan(near) && !isnan(far)) { // Ray collides with sphere.
+        if (!isnan(near)) { // Ray collides with sphere.
             
             // Calcuate collision point & normal
             Point3D collision = _point + _uv * near;
@@ -224,9 +247,8 @@ Color cast(Point3D _point, Vector3D _uv, int _bounces)
             if ( b > 255) {
                 b = 255;
             }
-//            } else {
-                return Color{(unsigned char) b, (unsigned char) 0, (unsigned char) b, 255};
-//            }
+            
+            return Color{(unsigned char) b, (unsigned char) (b * 150 / 255), (unsigned char) b, 255};
         }
     }
     

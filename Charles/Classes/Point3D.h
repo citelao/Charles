@@ -21,10 +21,10 @@ public:
     Point3D(double x = 0, double y = 0, double z = 0): x(x), y(y), z(z) {};
     
     // Subtract points
-    Vector3D &operator-(const Point3D &np) const;
+    Vector3D operator-(const Point3D &np) const;
 
     // Add vector to point
-    Point3D &operator+(const Vector3D &v) const;
+    Point3D operator+(const Vector3D &v) const;
 };
 
 #endif /* defined(__Charles__Point3D__) */

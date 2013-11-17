@@ -22,15 +22,15 @@ class Vector3D {
     :x(x), y(y), z(z) {};
     
     // Arithemetic
-    Vector3D &operator+(const Vector3D &nv) const;
-    Vector3D &operator-(const Vector3D &nv) const;
+    Vector3D operator+(const Vector3D &nv) const;
+    Vector3D operator-(const Vector3D &nv) const;
     
-    Vector3D &operator/(const double &nv) const;
-    Vector3D &operator*(const double &nv) const;
+    Vector3D operator/(const double &nv) const;
+    Vector3D operator*(const double &nv) const;
     
     // Dot and cross products, respectively.
     double operator*(const Vector3D &nv) const;
-    Vector3D &operator/(const Vector3D &nv) const;
+    Vector3D operator/(const Vector3D &nv) const;
     
     double magnitude(void) const;
     Vector3D unit(void) const;
