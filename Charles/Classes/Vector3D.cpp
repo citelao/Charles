@@ -11,33 +11,33 @@
 
 Vector3D Vector3D::operator+(const Vector3D &nv) const
 {
-    return Vector3D(this->x + nv.x, this->y + nv.y, this->z + nv.z);
+    return Vector3D(x + nv.x, y + nv.y, z + nv.z);
 }
 
 Vector3D Vector3D::operator-(const Vector3D &nv) const
 {
-    return Vector3D(this->x - nv.x, this->y - nv.y, this->z - nv.z);
+    return Vector3D(x - nv.x, y - nv.y, z - nv.z);
 }
 
 Vector3D Vector3D::operator/(const double &nv) const
 {
-    return Vector3D(this->x / nv, this->y / nv, this->z / nv);
+    return Vector3D(x / nv, y / nv, z / nv);
 }
 
 Vector3D Vector3D::operator*(const double &nv) const
 {
-    return Vector3D(this->x * nv, this->y * nv, this->z * nv);
+    return Vector3D(x * nv, y * nv, z * nv);
 }
 
 // Dot product.
 double Vector3D::operator*(const Vector3D &nv) const
 {
-    return this->x * nv.x + this->y * nv.y + this->z * nv.z;
+    return x * nv.x + y * nv.y + z * nv.z;
 }
 
 double Vector3D::magnitude(void) const
 {
-    return sqrt(pow(this->x, 2) + pow(this->y, 2) + pow(this->z, 2));
+    return sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2));
 }
 
 Vector3D Vector3D::unit(void) const

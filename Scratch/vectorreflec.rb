@@ -19,24 +19,10 @@ class Reflect
 	attr_accessor :i, :n
 
 	def go
-		m = -i * n
+		m = (-@i * @n) * @n
+		f = i + 2 * @n
 
-		a = m**2 - @n.x**2 * @i.magnitude ** 2
-		b = -2 * @n.y * m
-		c = (@n.magnitude)**2
-
-		y = (-b + (b**2 - 4*a*c)** 0.5) / (2 * a)
-		x = (m - @n.y * y) / @n.x
-
-		x = @i.x if @n.x == 0
-		y = @i.y if a == 0
-
-		x = x.round(5)
-		y = y.round(5)
-
-		puts x, y
-
-		return Vector.new(x, y)
+		return Vector.new(f.x, f.y)
 	end
 end
 
@@ -57,7 +43,20 @@ class Vector
 	end
 
 	def *(p)
-		@x * p.x + @y * p.y
+		return @x * p.x + @y * p.y if p.is_a? Vector
+
+		Vector.new(@x * p, @y * p)
+	end
+
+	def +(p)
+		Vector.new(@x + p.x, @y + p.y)
+	end
+
+	def coerce(obj)
+		case obj
+		when Numeric 
+			return self,obj
+		end
 	end
 
 	def -@

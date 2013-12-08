@@ -3,6 +3,9 @@
    version = "1.0">
    <ContextStates>
       <ContextState
+         contextName = "Sphere::collides(Ray3D const&amp;, Point3D*):Sphere.cpp">
+      </ContextState>
+      <ContextState
          contextName = "Vector3D::magnitude():Vector3D.cpp">
       </ContextState>
       <ContextState
@@ -23,6 +26,17 @@
       </ContextState>
       <ContextState
          contextName = "cast(Point3D, Vector3D):main.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "cast(Ray3D const&amp;, int):main.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "i">
+            </PersistentString>
+            <PersistentString
+               value = "j">
+            </PersistentString>
+         </PersistentStrings>
       </ContextState>
    </ContextStates>
 </VariablesViewState>
