@@ -21,7 +21,7 @@ bool Sphere::collides(const Ray3D &r, Point3D* p) {
         return false;
     }
     
-    if(near < 0) {
+    if(near > 0) {
         return false;
     }
     

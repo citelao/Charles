@@ -28,16 +28,15 @@ int main(int argc, const char * argv[])
 //    objects.push_back(new Sphere(0, 0, 160, 20));
 //    objects.push_back(new Sphere(0, 0, 200, 80));
     
-    objects.push_back(new Sphere(0, 0, 80, 20));
-    objects.push_back(new Sphere(-40, 0, 80, 20));
-    objects.push_back(new Sphere(-80, 0, 80, 20));
-//    objects.push_back(new Sphere(40, -20, 0, 20));
+    objects.push_back(new Sphere(-200, 40, 0, 120));
+    objects.push_back(new Sphere(-40, 0, 0, 20));
+    objects.push_back(new Sphere(-80, 0, 0, 20));
     
     // Quicksort z order.
     // TODO
     
     // Light 'em up.
-    lights.push_back(Light(0, 0, 0, 10));
+    lights.push_back(Light(0, 0, -30, 10));
     
     // Create window
     sf::RenderWindow window(sf::VideoMode(w, h), "Charles");
@@ -186,45 +185,6 @@ Color cast(const Ray3D &_r, int _bounces)
             Vector3D light = collision - lights[0].center;
             double cross = light * normal;
             
-            // Send out a shadow ray
-            for (int j = 0; j < objects.size(); j++) {
-                if(j==i) {
-                    continue;
-                }
-                
-                PhysicalObject* _pblocker = objects[j];
-                Point3D contacts;
-                
-                if (_pblocker->collides(Ray3D(collision, light), &contacts)) {
-                    return Color{0,255,0,255};
-                }
-                
-                checks++;
-            }
-            
-//            for (int j = 0; j <= objects.size(); j++) {
-//                if (j == i) {
-//                    break;
-//                }
-//                
-//                std::cout<< j;
-//                
-//                PhysicalObject* _pblocker = objects[j];
-//                Point3D contacts;
-//                
-//                if (_pblocker->collides(Ray3D(collision, light), &contacts)) {
-//                    if((contacts - lights[0].center).magnitude() < 0) {
-////                         return Color{0,255,0,255};
-//                    } else {
-////                        return Color{255,0,0,255};
-//                    }
-//                } else {
-////                    return Color{0,0,255,255};
-//                }
-//            }
-            
-//            return Color{255, 130, 255, 255};
-            
             // Send out a reflection ray
             // cast(contactpt, normal, _bounces + 1);
             // Send out a refraction ray
@@ -245,13 +205,30 @@ Color cast(const Ray3D &_r, int _bounces)
                 return Color{r, 0, 0, 255};
             }
             
-            double b = 255 * rangeness * fluxness;
+            // Send out a shadow ray
+            double shadow = 1;
+            for (int j = 0; j < objects.size(); j++) {
+                if(j==i) {
+                    continue;
+                }
+                
+                PhysicalObject* _pblocker = objects[j];
+                Point3D contacts;
+                
+                if (_pblocker->collides(Ray3D(collision, light), &contacts)) {
+                    shadow = 0;
+                }
+                
+                checks++;
+            }
+            
+            double b = 255 * rangeness * fluxness * shadow;
             
             if ( b > 255) {
                 b = 255;
             }
             
-            return Color{(unsigned char) b, (unsigned char) (b * sin(.1 * i)), (unsigned char) b, 255};
+            return Color{(unsigned char) b, (unsigned char) (b * 130 / 255), (unsigned char) b, 255};
         }
     }
     
