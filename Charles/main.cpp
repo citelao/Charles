@@ -6,51 +6,7 @@
 //  Copyright (c) 2013 Ben Stolovitz. All rights reserved.
 //
 
-// refs:
-// - http://en.sfml-dev.org/forums/index.php?topic=3543.0 (uint8 and image class)
-
-#include <iostream>
-#include <string>
-#include <thread>
-#include <math.h>
-#include <SFML/graphics.hpp>
-#include <vector>
-#include "Vector3D.h"
-#include "Point3D.h"
-#include "Sphere.h"
-#include "Light.h"
-
-/**
- * The ever-useful color struct
- **/
-struct Color {
-        unsigned char r;
-        unsigned char g;
-        unsigned char b;
-        unsigned char a;
-};
-
-/**
- * Define them variables.
- **/
-bool debug = false;
-int threads;
-
-int w = 512;
-int h = 512;
-unsigned char *renderImage = new unsigned char[w * h * 4];
-
-Point3D screenPos(- w / 2, - h / 2, 0); // TODO, since we use projection now.
-Point3D camera(0, 0, - 500);
-
-std::vector<Sphere> spheres {};
-std::vector<Light> lights {};
-
-/**
- * Function time!
- **/
-void render(int _x, int _y, int _w, int _h);
-Color cast(const Point3D &_point, const Vector3D &_uv, int _bounces = 0);
+#include "main.h"
 
 /**
  * BEGIN THE PROGRAM
@@ -60,22 +16,27 @@ int main(int argc, const char * argv[])
     std::cout << "Go, Charles!\n";
     
     // Make spheres. Lots of spheres.
-    double _r = 40;
-    for (double _zp =  80; _zp <= 6800; _zp += 80) {
-        for (double _xp = -400; _xp <= 400; _xp += 80) {
-            for (double _yp = -400; _yp <= 400; _yp += 80) {
-                // double _i = rand() % 400 - 200;
-                double _i = 0;
-                spheres.push_back(Sphere(_xp + _i, _yp + _i, _zp + _i, _r));
-            }
-        }
-    }
+//    double _r = 40;
+//    for (double _zp =  80; _zp <= 680; _zp += 150) {
+//        for (double _xp = -400; _xp <= 400; _xp += 150) {
+//            for (double _yp = -400; _yp <= 400; _yp += 150) {
+//                double _i = 0;
+//                objects.push_back(new Sphere(_xp + _i, _yp + _i, _zp + _i, _r));
+//            }
+//        }
+//    }
+//    objects.push_back(new Sphere(0, 0, 160, 20));
+//    objects.push_back(new Sphere(0, 0, 200, 80));
+    
+    objects.push_back(new Sphere(-200, 40, 0, 120));
+    objects.push_back(new Sphere(-40, 0, 0, 20));
+    objects.push_back(new Sphere(-80, 0, 0, 20));
     
     // Quicksort z order.
     // TODO
     
     // Light 'em up.
-    lights.push_back(Light(-150, 100, 200, 10));
+    lights.push_back(Light(0, 0, -30, 10));
     
     // Create window
     sf::RenderWindow window(sf::VideoMode(w, h), "Charles");
@@ -89,6 +50,8 @@ int main(int argc, const char * argv[])
      * Start render threads.
      * One for each quarter of the screen.
      **/
+    
+    // TODO replace with atomic bitmap for each pixel and pick at random.
     threads = 4;
     std::thread rt1(&render, 0, 0, w/2, h/2);
     std::thread rt2(&render, w/2, 0, w/2, h/2);
@@ -102,7 +65,7 @@ int main(int argc, const char * argv[])
     /**
      * Sensible optimization
      **/
-    window.setFramerateLimit(10);
+    window.setFramerateLimit(60);
     
     while(window.isOpen())
     {
@@ -130,6 +93,11 @@ int main(int argc, const char * argv[])
             // Display the frame
             window.draw(sprite);
             window.display();
+        } else if(threads == -1) {
+            std::cout << "Done Rendering \n";
+            std::cout << "Collided rays: " << collided << "\n";
+            std::cout << "Shadow checks: " << checks << "\n";
+            threads--;
         }
     }
     
@@ -172,11 +140,12 @@ void render(int _x, int _y, int _w, int _h)
             
             // Create a vector from origin to spherical screenspace and make it a unit vector.
             Vector3D uv = (scv + Vector3D(cx, cy, sphereZ)).unit();
-            
             Point3D p = Point3D(screenPos.x + cx, screenPos.y + cy, screenPos.z);
             
+            Ray3D r = Ray3D(p, uv);
+            
             // Cast a ray from the screen point in the newly calculated direction.
-            Color c = cast(p, uv);
+            Color c = cast(r);
             
             // Write the RGBA codes to the unsigned char array.
             renderImage[((cy * w) + cx) * 4]     = c.r;
@@ -194,34 +163,29 @@ void render(int _x, int _y, int _w, int _h)
 /**
  * Cast a ray from a _point with direction _versor
  **/
-Color cast(const Point3D &_point, const Vector3D &_uv, int _bounces)
+Color cast(const Ray3D &_r, int _bounces)
 {
     if (_bounces >= 3) {
         return Color{0, 0, 0, 255};
     }
     
-    for (int i = 0; i <= spheres.size(); i++) {
-        Sphere _sphere = spheres[i];
+    for (int i = 0; i < objects.size(); i++) {
+        // TODO legit color calculation.
+        PhysicalObject* _object = objects[i];
+
+        Point3D collision;
+        bool collides = _object->collides(_r, &collision);
         
-        // Use the quadratic equation to solve for sphere intersection.
-        double a = pow(_uv.x, 2) + pow(_uv.y, 2) + pow(_uv.z, 2);
-        double b = 2 * ((_point.x - _sphere.center.x) * _uv.x + (_point.y - _sphere.center.y) * _uv.y + (_point.z - _sphere.center.z) * _uv.z);
-        double c = pow(_point.x - _sphere.center.x, 2) + pow(_point.y - _sphere.center.y, 2) + pow(_point.z - _sphere.center.z, 2) - pow(_sphere.radius, 2);
-        
-        // double far = (-b + sqrt(pow(b, 2) - 4 * a * c)) / (2 * a);
-        double near = (-b - sqrt(pow(b, 2) - 4 * a * c)) / (2 * a);
-        
-        if (!isnan(near)) { // Ray collides with sphere.
+        if (collides == true) { // Ray collides with sphere.
             
-            // Calcuate collision point & normal
-            Point3D collision = _point + _uv * near;
-            Vector3D normal = collision - _sphere.center;
+            collided++;
+            
+            Vector3D normal = _object->normal(collision);
             
             // Send out a light ray
             Vector3D light = collision - lights[0].center;
             double cross = light * normal;
             
-            // Send out a shadow ray
             // Send out a reflection ray
             // cast(contactpt, normal, _bounces + 1);
             // Send out a refraction ray
@@ -242,13 +206,30 @@ Color cast(const Point3D &_point, const Vector3D &_uv, int _bounces)
                 return Color{r, 0, 0, 255};
             }
             
-            double b = rangeness * fluxness * 255;
+            // Send out a shadow ray
+            double shadow = 1;
+            for (int j = 0; j < objects.size(); j++) {
+                if(j==i) {
+                    continue;
+                }
+                
+                PhysicalObject* _pblocker = objects[j];
+                Point3D contacts;
+                
+                if (_pblocker->collides(Ray3D(collision, light), &contacts)) {
+                    shadow = 0;
+                }
+                
+                checks++;
+            }
+            
+            double b = 255 * rangeness * fluxness * shadow;
             
             if ( b > 255) {
                 b = 255;
             }
             
-            return Color{(unsigned char) b, (unsigned char) (b * 150 / 255), (unsigned char) b, 255};
+            return Color{(unsigned char) b, (unsigned char) (b * 130 / 255), (unsigned char) b, 255};
         }
     }
     
