@@ -170,6 +170,7 @@ Color cast(const Ray3D &_r, int _bounces)
     }
     
     for (int i = 0; i < objects.size(); i++) {
+        // TODO legit color calculation.
         PhysicalObject* _object = objects[i];
 
         Point3D collision;
