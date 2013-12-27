@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		7E17B6721818DC090080FB2A /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E17B6711818DC090080FB2A /* main.cpp */; };
 		7E17B6771818DC3B0080FB2A /* Vector3D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E17B6751818DC3B0080FB2A /* Vector3D.cpp */; };
+		7E31CB4F185A33CC00E94548 /* RectPrism.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E31CB4D185A33CC00E94548 /* RectPrism.cpp */; };
 		7E37B613181F78EA000C8A03 /* Point3D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E37B611181F78EA000C8A03 /* Point3D.cpp */; };
 		7E95D5771818BC0E002B9D85 /* sfml-graphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E95D5731818BC0E002B9D85 /* sfml-graphics.framework */; };
 		7E95D5781818BC0E002B9D85 /* sfml-system.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E95D5741818BC0E002B9D85 /* sfml-system.framework */; };
@@ -48,6 +49,8 @@
 		7E17B6711818DC090080FB2A /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = Charles/main.cpp; sourceTree = "<group>"; };
 		7E17B6751818DC3B0080FB2A /* Vector3D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Vector3D.cpp; sourceTree = "<group>"; };
 		7E17B6761818DC3B0080FB2A /* Vector3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vector3D.h; sourceTree = "<group>"; };
+		7E31CB4D185A33CC00E94548 /* RectPrism.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RectPrism.cpp; sourceTree = "<group>"; };
+		7E31CB4E185A33CC00E94548 /* RectPrism.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RectPrism.h; sourceTree = "<group>"; };
 		7E37B611181F78EA000C8A03 /* Point3D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Point3D.cpp; sourceTree = "<group>"; };
 		7E37B612181F78EA000C8A03 /* Point3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Point3D.h; sourceTree = "<group>"; };
 		7E5D83E61818976C005CC665 /* Charles */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Charles; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -106,14 +109,24 @@
 			children = (
 				7ED3A517182469AC00EABE3B /* Light.cpp */,
 				7ED3A518182469AC00EABE3B /* Light.h */,
-				7ED3A519182469AC00EABE3B /* Sphere.cpp */,
-				7ED3A51A182469AC00EABE3B /* Sphere.h */,
-				7E98E00918512B0800FE6A85 /* PhysicalObject.cpp */,
-				7E98E0021851144C00FE6A85 /* PhysicalObject.h */,
+				7E31CB4C185A33AC00E94548 /* Objects */,
 				7E98E008185126FA00FE6A85 /* Math */,
 			);
 			name = Classes;
 			path = Charles/Classes;
+			sourceTree = "<group>";
+		};
+		7E31CB4C185A33AC00E94548 /* Objects */ = {
+			isa = PBXGroup;
+			children = (
+				7ED3A519182469AC00EABE3B /* Sphere.cpp */,
+				7ED3A51A182469AC00EABE3B /* Sphere.h */,
+				7E98E00918512B0800FE6A85 /* PhysicalObject.cpp */,
+				7E98E0021851144C00FE6A85 /* PhysicalObject.h */,
+				7E31CB4D185A33CC00E94548 /* RectPrism.cpp */,
+				7E31CB4E185A33CC00E94548 /* RectPrism.h */,
+			);
+			name = Objects;
 			sourceTree = "<group>";
 		};
 		7E5D83DD1818976C005CC665 = {
@@ -238,6 +251,7 @@
 				7ED3A51C182469AC00EABE3B /* Sphere.cpp in Sources */,
 				7E17B6771818DC3B0080FB2A /* Vector3D.cpp in Sources */,
 				7E98E007185126EF00FE6A85 /* Ray3D.cpp in Sources */,
+				7E31CB4F185A33CC00E94548 /* RectPrism.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

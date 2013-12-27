@@ -28,9 +28,13 @@ int main(int argc, const char * argv[])
 //    objects.push_back(new Sphere(0, 0, 160, 20));
 //    objects.push_back(new Sphere(0, 0, 200, 80));
     
-    objects.push_back(new Sphere(-200, 40, 0, 120));
-    objects.push_back(new Sphere(-40, 0, 0, 20));
-    objects.push_back(new Sphere(-80, 0, 0, 20));
+//    objects.push_back(new Sphere(-200, 40, 0, 120));
+//    objects.push_back(new Sphere(-40, 0, 0, 20));
+//    objects.push_back(new Sphere(-80, 0, 0, 20));
+    objects.push_back(new RectPrism(-120, -150, -40, 30, 20, 100));
+    objects.push_back(new RectPrism(120, -150, -40, 30, 20, 100));
+    objects.push_back(new RectPrism(-120, 150, -40, 30, 20, 100));
+    objects.push_back(new RectPrism(120, 150, -40, 30, 20, 100));
     
     // Quicksort z order.
     // TODO
@@ -176,7 +180,9 @@ Color cast(const Ray3D &_r, int _bounces)
         Point3D collision;
         bool collides = _object->collides(_r, &collision);
         
-        if (collides == true) { // Ray collides with sphere.
+        if (collides == true) { // Ray collides with object.
+            if (debugCollisions)
+                return Color{255,255,255,255};
             
             collided++;
             

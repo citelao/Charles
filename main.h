@@ -23,6 +23,7 @@
 #include "Point3D.h"
 #include "Sphere.h"
 #include "Light.h"
+#include "RectPrism.h"
 
 /**
  * The ever-useful color struct
@@ -38,6 +39,7 @@ struct Color {
  * Define them variables.
  **/
 bool debug = false;
+bool debugCollisions = false;
 int collided = 0;
 int checks = 0;
 int threads;

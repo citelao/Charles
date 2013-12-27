@@ -23,6 +23,8 @@ public:
     
     Ray3D(double x, double y, double z, double dx, double dy, double dz)
         :p(x, y, z), uv(dx, dy, dz) {};
+    
+    Point3D interval(const double &t) const;
 };
 
 #endif /* defined(__Charles__Ray3D__) */
