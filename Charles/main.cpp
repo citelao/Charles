@@ -180,7 +180,7 @@ Point2D getNextPoint()
     bool ptRendered = true;
     
     while (ptRendered) {
-        position = (random() % (totalPixels));
+        position = (arc4random() % (totalPixels));
         
         if (renderedPoints[position] == false) {
             renderedPoints[position] = true;
