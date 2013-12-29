@@ -34,17 +34,34 @@ struct Color {
     unsigned char a;
 };
 
+struct Point2D {
+    int x;
+    int y;
+};
+
+enum state {
+    rendering,
+    notifying,
+    done
+};
+
 /**
  * Define them variables.
  **/
+
 bool debug = false;
+
 int collided = 0;
 int checks = 0;
 int threads;
 
 int w = 512;
 int h = 512;
-unsigned char *renderImage = new unsigned char[w * h * 4];
+unsigned char *renderImage = new unsigned char[w * h * 4]{40};
+
+
+int renderedPoints = 0;
+state currentState = rendering;
 
 Point3D screenPos(- w / 2, - h / 2, 0); // TODO, since we use projection now.
 Point3D camera(0, 0, - 500);
@@ -55,7 +72,8 @@ std::vector<Light> lights {};
 /**
  * Function time!
  **/
-void render(int _x, int _y, int _w, int _h);
+void render();
+Point2D getNextPoint();
 Color cast(const Ray3D &r, int _bounces = 0);
 
 #endif

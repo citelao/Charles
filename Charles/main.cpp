@@ -51,12 +51,10 @@ int main(int argc, const char * argv[])
      * One for each quarter of the screen.
      **/
     
-    // TODO replace with atomic bitmap for each pixel and pick at random.
-    threads = 4;
-    std::thread rt1(&render, 0, 0, w/2, h/2);
-    std::thread rt2(&render, w/2, 0, w/2, h/2);
-    std::thread rt3(&render, 0, h/2, w/2, h/2);
-    std::thread rt4(&render, w/2, h/2, w/2, h/2);
+    std::thread rt1(&render);
+    std::thread rt2(&render);
+    std::thread rt3(&render);
+    std::thread rt4(&render);
     rt1.detach();
     rt2.detach();
     rt3.detach();
@@ -78,10 +76,18 @@ int main(int argc, const char * argv[])
                 window.close();
         }
         
-        if(threads > -1)
+        if(currentState == notifying) {
+            std::cout << "Done Rendering \n";
+            std::cout << "Collided rays: " << collided << "\n";
+            std::cout << "Shadow checks: " << checks << "\n";
+            
+            currentState = done;
+        }
+        else if (currentState == rendering)
         {
-            if(threads == 0)
-                threads--;
+            if (renderedPoints >= w*h) {
+                currentState = notifying;
+            }
             
             // Clear screen.
             window.clear(sf::Color::Black);
@@ -93,18 +99,13 @@ int main(int argc, const char * argv[])
             // Display the frame
             window.draw(sprite);
             window.display();
-        } else if(threads == -1) {
-            std::cout << "Done Rendering \n";
-            std::cout << "Collided rays: " << collided << "\n";
-            std::cout << "Shadow checks: " << checks << "\n";
-            threads--;
         }
     }
     
     return 0;
 }
 
-void render(int _x, int _y, int _w, int _h)
+void render()
 {
     std::cout << "Render thread started! \n";
     
@@ -114,50 +115,80 @@ void render(int _x, int _y, int _w, int _h)
     
     Vector3D scv = screenPos - camera;
     
-    // For each row from starting row to height,
-    // scan through each column from starting col to width.
-    for (int cy = _y; cy < _y + _h; cy++) {
-        for (int cx = _x; cx < _x + _w; cx++ ) {
-            /****
-             * Construct unit vector pointing from eye to screen pixel as sphere. 
-             ****
-             * Screen is stored mathematically as top-left corner of screen rectangle, which
-             * needs to be transformed into a sphere. See math projection.
-             * See:
-             * - http://en.wikipedia.org/wiki/Curvilinear_perspective
-             * - http://en.wikipedia.org/wiki/3D_projection
-             * - http://en.wikipedia.org/wiki/Camera_matrix
-             * - and the book
-             **/
-            
-            // Use the 3D Pythagorean theorem: h**2 = x**2 + y**2 + z**2
-            // or (since we know the hypotenuse), sqrt(h**2 - x**2 - y**2) = z
-            double sphereZ = sqrt(
-                pow(szz, 2)
-              - pow(szx + cx, 2)
-              - pow(szy + cy, 2)
-            );
-            
-            // Create a vector from origin to spherical screenspace and make it a unit vector.
-            Vector3D uv = (scv + Vector3D(cx, cy, sphereZ)).unit();
-            Point3D p = Point3D(screenPos.x + cx, screenPos.y + cy, screenPos.z);
-            
-            Ray3D r = Ray3D(p, uv);
-            
-            // Cast a ray from the screen point in the newly calculated direction.
-            Color c = cast(r);
-            
-            // Write the RGBA codes to the unsigned char array.
-            renderImage[((cy * w) + cx) * 4]     = c.r;
-            renderImage[((cy * w) + cx) * 4 + 1] = c.g;
-            renderImage[((cy * w) + cx) * 4 + 2] = c.b;
-            renderImage[((cy * w) + cx) * 4 + 3] = c.a;
+    while (currentState == rendering) {
+        // Get an unrendered point
+        Point2D p2d = getNextPoint();
+        
+        /****
+         * Construct unit vector pointing from eye to screen pixel as sphere.
+         ****
+         * Screen is stored mathematically as top-left corner of screen rectangle, which
+         * needs to be transformed into a sphere. See math projection.
+         * See:
+         * - http://en.wikipedia.org/wiki/Curvilinear_perspective
+         * - http://en.wikipedia.org/wiki/3D_projection
+         * - http://en.wikipedia.org/wiki/Camera_matrix
+         * - and the book
+         **/
+        
+        // Use the 3D Pythagorean theorem: h**2 = x**2 + y**2 + z**2
+        // or (since we know the hypotenuse), sqrt(h**2 - x**2 - y**2) = z
+        double sphereZ = sqrt(
+          pow(szz, 2)
+          - pow(szx + p2d.x, 2)
+          - pow(szy + p2d.y, 2)
+        );
+        
+        // Create a vector from origin to spherical screenspace and make it a unit vector.
+        Vector3D uv = (scv + Vector3D(p2d.x, p2d.y, sphereZ)).unit();
+        Point3D p = Point3D(screenPos.x + p2d.x, screenPos.y + p2d.y, screenPos.z);
+        
+        Ray3D r = Ray3D(p, uv);
+        
+        // Cast a ray from the screen point in the newly calculated direction.
+        Color c = cast(r);
+        
+        // Write the RGBA codes to the unsigned char array.
+        renderImage[((p2d.y * w) + p2d.x) * 4]     = c.r;
+        renderImage[((p2d.y * w) + p2d.x) * 4 + 1] = c.g;
+        renderImage[((p2d.y * w) + p2d.x) * 4 + 2] = c.b;
+        renderImage[((p2d.y * w) + p2d.x) * 4 + 3] = c.a;
+        
+        // Increment total number of rendered points.
+        renderedPoints++;
+    }
+
+    std::cout << "Render thread completed! \n";
+}
+
+Point2D getNextPoint()
+{
+    if (renderedPoints >= w * h * 4 / 5) {
+        for (int i = 0; i <= w * h; i++) {
+            if (renderImage[i * 4 + 3] == '\0') {
+                int y = i / w;
+                int x = i - y * w;
+                
+                return Point2D{x, y};
+            }
         }
     }
     
-    threads--;
+    int position;
+    bool ptRendered = true;
     
-    std::cout << "Render thread completed! \n";
+    while (ptRendered) {
+        position = (random() % (w * h));
+        unsigned char point = renderImage[position * 4 + 3];
+        
+        if (point == '\0')
+            ptRendered = false;
+    }
+    
+    int y = position / w;
+    int x = position - y * w;
+    
+    return Point2D{x, y};
 }
 
 /**
