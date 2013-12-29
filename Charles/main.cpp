@@ -16,27 +16,26 @@ int main(int argc, const char * argv[])
     std::cout << "Go, Charles!\n";
     
     // Make spheres. Lots of spheres.
-//    double _r = 40;
-//    for (double _zp =  80; _zp <= 680; _zp += 150) {
-//        for (double _xp = -400; _xp <= 400; _xp += 150) {
-//            for (double _yp = -400; _yp <= 400; _yp += 150) {
-//                double _i = 0;
-//                objects.push_back(new Sphere(_xp + _i, _yp + _i, _zp + _i, _r));
-//            }
-//        }
-//    }
+    double _r = 40;
+    for (double _zp = -200; _zp <= 0; _zp += 100) {
+    for (double _xp = -200; _xp <= 200; _xp += 100) {
+    for (double _yp = -200; _yp <= 200; _yp += 100) {
+        objects.push_back(new Sphere(_xp, _yp, _zp, _r));
+    }
+    }
+    }
 //    objects.push_back(new Sphere(0, 0, 160, 20));
 //    objects.push_back(new Sphere(0, 0, 200, 80));
     
-    objects.push_back(new Sphere(-200, 40, 0, 120));
-    objects.push_back(new Sphere(-40, 0, 0, 20));
-    objects.push_back(new Sphere(-80, 0, 0, 20));
+//    objects.push_back(new Sphere(-200, 40, 0, 120));
+//    objects.push_back(new Sphere(-40, 0, 0, 20));
+//    objects.push_back(new Sphere(-80, 0, 0, 20));
     
     // Quicksort z order.
     // TODO
     
     // Light 'em up.
-    lights.push_back(Light(0, 0, -30, 10));
+    lights.push_back(Light(0, 0, -800, 10));
     
     // Create window
     sf::RenderWindow window(sf::VideoMode(w, h), "Charles");
@@ -48,9 +47,7 @@ int main(int argc, const char * argv[])
     
     /** 
      * Start render threads.
-     * One for each quarter of the screen.
      **/
-    
     std::thread rt1(&render);
     std::thread rt2(&render);
     std::thread rt3(&render);
@@ -76,17 +73,17 @@ int main(int argc, const char * argv[])
                 window.close();
         }
         
-        if(currentState == notifying) {
+        if(currentState == state::notifying) {
             std::cout << "Done Rendering \n";
             std::cout << "Collided rays: " << collided << "\n";
             std::cout << "Shadow checks: " << checks << "\n";
             
-            currentState = done;
+            currentState = state::done;
         }
-        else if (currentState == rendering)
+        else if (currentState == state::rendering)
         {
             if (renderedPoints >= w*h) {
-                currentState = notifying;
+                currentState = state::notifying;
             }
             
             // Clear screen.
@@ -115,9 +112,9 @@ void render()
     
     Vector3D scv = screenPos - camera;
     
-    while (currentState == rendering) {
+    while (currentState == state::rendering) {
         // Get an unrendered point
-        Point2D p2d = getNextPoint();
+        Point2D screenPoint = getNextPoint();
         
         /****
          * Construct unit vector pointing from eye to screen pixel as sphere.
@@ -135,13 +132,13 @@ void render()
         // or (since we know the hypotenuse), sqrt(h**2 - x**2 - y**2) = z
         double sphereZ = sqrt(
           pow(szz, 2)
-          - pow(szx + p2d.x, 2)
-          - pow(szy + p2d.y, 2)
+          - pow(szx + screenPoint.x, 2)
+          - pow(szy + screenPoint.y, 2)
         );
         
         // Create a vector from origin to spherical screenspace and make it a unit vector.
-        Vector3D uv = (scv + Vector3D(p2d.x, p2d.y, sphereZ)).unit();
-        Point3D p = Point3D(screenPos.x + p2d.x, screenPos.y + p2d.y, screenPos.z);
+        Vector3D uv = (scv + Vector3D(screenPoint.x, screenPoint.y, sphereZ)).unit();
+        Point3D p = Point3D(screenPos.x + screenPoint.x, screenPos.y + screenPoint.y, screenPos.z);
         
         Ray3D r = Ray3D(p, uv);
         
@@ -149,10 +146,10 @@ void render()
         Color c = cast(r);
         
         // Write the RGBA codes to the unsigned char array.
-        renderImage[((p2d.y * w) + p2d.x) * 4]     = c.r;
-        renderImage[((p2d.y * w) + p2d.x) * 4 + 1] = c.g;
-        renderImage[((p2d.y * w) + p2d.x) * 4 + 2] = c.b;
-        renderImage[((p2d.y * w) + p2d.x) * 4 + 3] = c.a;
+        renderImage[((screenPoint.y * w) + screenPoint.x) * 4]     = c.r;
+        renderImage[((screenPoint.y * w) + screenPoint.x) * 4 + 1] = c.g;
+        renderImage[((screenPoint.y * w) + screenPoint.x) * 4 + 2] = c.b;
+        renderImage[((screenPoint.y * w) + screenPoint.x) * 4 + 3] = c.a;
         
         // Increment total number of rendered points.
         renderedPoints++;
@@ -161,6 +158,7 @@ void render()
     std::cout << "Render thread completed! \n";
 }
 
+// TODO fix non-completion bug with multiple threads.
 Point2D getNextPoint()
 {
     if (renderedPoints >= w * h * 4 / 5) {
@@ -209,6 +207,10 @@ Color cast(const Ray3D &_r, int _bounces)
         
         if (collides == true) { // Ray collides with sphere.
             
+            if (debug == mode::onscreen) {
+                return Color{255, 255, 255, 255};
+            }
+            
             collided++;
             
             Vector3D normal = _object->normal(collision);
@@ -226,14 +228,14 @@ Color cast(const Ray3D &_r, int _bounces)
             double rangeness = 1 / sqrt(light.magnitude()) * lights[0].intensity;
             
             if (rangeness <= 0) {
-                unsigned char g = (unsigned char) (debug) ? 255 : 0;
+                unsigned char g = (unsigned char) (debug == mode::light) ? 255 : 0;
                 return Color{0, g, 0, 255};
             }
             
             double fluxness = - cross / (light.magnitude() * normal.magnitude());
             
             if (fluxness <= 0) {
-                unsigned char r = (unsigned char) (debug) ? 255 : 0;
+                unsigned char r = (unsigned char) (debug == mode::light) ? 255 : 0;
                 return Color{r, 0, 0, 255};
             }
             
@@ -248,6 +250,10 @@ Color cast(const Ray3D &_r, int _bounces)
                 Point3D contacts;
                 
                 if (_pblocker->collides(Ray3D(collision, light), &contacts)) {
+                    if (debug == mode::shadows) {
+                        return Color{255,0,0,255};
+                    }
+                    
                     shadow = 0;
                 }
                 

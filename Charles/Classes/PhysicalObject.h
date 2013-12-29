@@ -10,7 +10,6 @@
 #define __Charles__PhysicalObject__
 
 #include <iostream>
-#include "Point3D.h"
 #include "Vector3D.h"
 #include "Ray3D.h"
 

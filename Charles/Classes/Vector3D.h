@@ -36,4 +36,7 @@ class Vector3D {
     Vector3D unit(void) const;
 };
 
+// Vectors and Points are interchangeable mathwise, but I like keeping variables with different names.
+typedef Vector3D Point3D;
+
 #endif /* defined(__Charles__Vector3D__) */

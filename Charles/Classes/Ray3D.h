@@ -10,7 +10,6 @@
 #define __Charles__Ray3D__
 
 #include <iostream>
-#include "Point3D.h"
 #include "Vector3D.h"
 
 class Ray3D {
