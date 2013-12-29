@@ -35,7 +35,7 @@ int main(int argc, const char * argv[])
     // TODO
     
     // Light 'em up.
-    lights.push_back(Light(0, 0, -800, 10));
+    lights.push_back(Light(0, 0, -400, 10));
     
     // Create window
     sf::RenderWindow window(sf::VideoMode(w, h), "Charles");
@@ -82,7 +82,7 @@ int main(int argc, const char * argv[])
         }
         else if (currentState == state::rendering)
         {
-            if (renderedPoints >= w*h) {
+            if (totalRenderedPoints >= totalPixels) {
                 currentState = state::notifying;
             }
             
@@ -152,36 +152,44 @@ void render()
         renderImage[((screenPoint.y * w) + screenPoint.x) * 4 + 3] = c.a;
         
         // Increment total number of rendered points.
-        renderedPoints++;
+        totalRenderedPoints++;
     }
 
     std::cout << "Render thread completed! \n";
 }
 
-// TODO fix non-completion bug with multiple threads.
 Point2D getNextPoint()
 {
-    if (renderedPoints >= w * h * 4 / 5) {
-        for (int i = 0; i <= w * h; i++) {
-            if (renderImage[i * 4 + 3] == '\0') {
-                int y = i / w;
-                int x = i - y * w;
-                
-                return Point2D{x, y};
-            }
-        }
-    }
+    // TODO allocate points to render on launch to avoid thread-related gaps.
+    
+//    // If most points are rendered, switch to sweeping.
+//    if (totalRenderedPoints >= w * h * 4 / 5) {
+//        for (int i = 0; i <= totalPixels; i++) {
+//            if (!renderedPoints[i]) {
+//                int y = i / w;
+//                int x = i - y * w;
+//                
+//                renderedPoints[i] = true;
+//                
+//                return Point2D{x, y};
+//            }
+//        }
+//    }
     
     int position;
     bool ptRendered = true;
     
     while (ptRendered) {
-        position = (random() % (w * h));
-        unsigned char point = renderImage[position * 4 + 3];
+        position = (random() % (totalPixels));
         
-        if (point == '\0')
+        if (renderedPoints[position] == false) {
+            renderedPoints[position] = true;
             ptRendered = false;
+        }
+        
     }
+    
+    renderedPoints[position] = true;
     
     int y = position / w;
     int x = position - y * w;
@@ -213,7 +221,13 @@ Color cast(const Ray3D &_r, int _bounces)
             
             collided++;
             
+            // TODO why isn't this unitized
             Vector3D normal = _object->normal(collision);
+            
+            if (debug == mode::normal) {
+                Vector3D un = normal.unit();
+                return Color{(unsigned char)(126 + 126 * un.x), (unsigned char)(126 + 126 * un.y), (unsigned char)(126 + 126 * un.z), 255};
+            }
             
             // Send out a light ray
             Vector3D light = collision - lights[0].center;

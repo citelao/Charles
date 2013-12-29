@@ -42,33 +42,43 @@ struct Point2D {
 };
 
 /**
- * Define them variables.
+ * Enums
  **/
 
-// Debug mode
 enum mode {
     none,
     onscreen, // should print all onscreen objects as white, regardless of illumination
     shadows, // should help show shadows
+    normal, // should display normal line; r: x, g: y, b: z
     light // not too terribly meaningful
 };
-mode debug = shadows;
 
-// Renderer statistics
 enum state {
     rendering,
     notifying,
     done
 };
-int collided = 0;
-int checks = 0;
-int renderedPoints = 0;
-state currentState = rendering;
+
+/**
+ * Define them variables.
+ **/
+
+// Debug mode
+mode debug = mode::none;
 
 // Renderer settings
 int w = 512;
 int h = 512;
-unsigned char *renderImage = new unsigned char[w * h * 4];
+int totalPixels = w * h;
+unsigned char* renderImage = new unsigned char[totalPixels * 4];
+
+// Renderer statistics
+int collided = 0;
+int checks = 0;
+
+state currentState = rendering;
+int totalRenderedPoints = 0;
+bool* renderedPoints = new bool[totalPixels];
 
 // Camera configuration
 Point3D screenPos(- w / 2, - h / 2, 0); // TODO, since we use projection now.
