@@ -45,12 +45,14 @@ struct Point2D {
  * Enums
  **/
 
+// TODO set to flags
 enum mode {
     none,
-    onscreen, // should print all onscreen objects as white, regardless of illumination
-    shadows, // should help show shadows
-    normal, // should display normal line; r: x, g: y, b: z
-    light // not too terribly meaningful
+    onscreen,    // should print all onscreen objects as white, regardless of illumination
+    shadows,     // should help show shadows
+    normal,      // should display normal line; r: x, g: y, b: z
+    unrendered,  // shows unrendered pixels as purple.
+    light        // not too terribly meaningful
 };
 
 enum state {
@@ -64,7 +66,7 @@ enum state {
  **/
 
 // Debug mode
-mode debug = mode::none;
+mode debug = mode::unrendered;
 
 // Renderer settings
 int w = 512;

@@ -24,15 +24,6 @@ int main(int argc, const char * argv[])
     }
     }
     }
-//    objects.push_back(new Sphere(0, 0, 160, 20));
-//    objects.push_back(new Sphere(0, 0, 200, 80));
-    
-//    objects.push_back(new Sphere(-200, 40, 0, 120));
-//    objects.push_back(new Sphere(-40, 0, 0, 20));
-//    objects.push_back(new Sphere(-80, 0, 0, 20));
-    
-    // Quicksort z order.
-    // TODO
     
     // Light 'em up.
     lights.push_back(Light(0, 0, -400, 10));
@@ -64,6 +55,10 @@ int main(int argc, const char * argv[])
     
     while(window.isOpen())
     {
+        /**
+         * SFML stuff
+         **/
+        
         // Check for exit command.
         sf::Event event;
         while (window.pollEvent(event))
@@ -73,18 +68,52 @@ int main(int argc, const char * argv[])
                 window.close();
         }
         
-        if(currentState == state::notifying) {
+        /**
+         * Leader thread debug & optim stuff
+         **/
+        
+        // Show unrendered points in the correct debug mode
+        if (debug == mode::unrendered) {
+            for (int i = 0; i < totalPixels; i++) {
+                if (renderedPoints[i] == false) {
+                    renderImage[i * 4]   = 255; // r
+                    renderImage[i * 4+1] =   0; // g
+                    renderImage[i * 4+2] = 255; // b
+                    renderImage[i * 4+3] = 255; // a
+                }
+            }
+        }
+        
+        /**
+         * Display stuff
+         **/
+        
+        // Determine correct action based on state
+        if (currentState == state::notifying) // Print out statistics once if done rendering
+        {
             std::cout << "Done Rendering \n";
+            std::cout << "Total Points Rendered: " << totalRenderedPoints << "/" << totalPixels << "\n";
             std::cout << "Collided rays: " << collided << "\n";
             std::cout << "Shadow checks: " << checks << "\n";
             
             currentState = state::done;
         }
-        else if (currentState == state::rendering)
+        else if (currentState == state::rendering) // Update screen if rendering
         {
-            if (totalRenderedPoints >= totalPixels) {
+            // If we're done rendering everything, stop the rendering. Pretty self explanatory.
+            bool done = true;
+            for (int i = 0; i < totalPixels; i++) {
+                if (!renderedPoints[i]) {
+                    done = false;
+                }
+            }
+            
+            if (done)
+            {
                 currentState = state::notifying;
             }
+            
+            std::cout << totalRenderedPoints << "/" << totalPixels << " " << totalPixels-totalRenderedPoints << "\n";
             
             // Clear screen.
             window.clear(sf::Color::Black);
@@ -106,6 +135,7 @@ void render()
 {
     std::cout << "Render thread started! \n";
     
+    // TODO rewrite to use frustrum
     double szz = screenPos.z - camera.z;
     double szx = screenPos.x - camera.x;
     double szy = screenPos.y - camera.y;
@@ -149,7 +179,7 @@ void render()
         renderImage[((screenPoint.y * w) + screenPoint.x) * 4]     = c.r;
         renderImage[((screenPoint.y * w) + screenPoint.x) * 4 + 1] = c.g;
         renderImage[((screenPoint.y * w) + screenPoint.x) * 4 + 2] = c.b;
-        renderImage[((screenPoint.y * w) + screenPoint.x) * 4 + 3] = c.a;
+        renderImage[((screenPoint.y * w) + screenPoint.x) * 4 + 3] = 255; // Alpha must always be 255 to show.
         
         // Increment total number of rendered points.
         totalRenderedPoints++;
@@ -163,8 +193,8 @@ Point2D getNextPoint()
     // TODO allocate points to render on launch to avoid thread-related gaps.
     
 //    // If most points are rendered, switch to sweeping.
-//    if (totalRenderedPoints >= w * h * 4 / 5) {
-//        for (int i = 0; i <= totalPixels; i++) {
+//    if (totalRenderedPoints >= totalPixels * .95) {
+//        for (int i = 0; i < totalPixels; i++) {
 //            if (!renderedPoints[i]) {
 //                int y = i / w;
 //                int x = i - y * w;
@@ -179,8 +209,8 @@ Point2D getNextPoint()
     int position;
     bool ptRendered = true;
     
-    while (ptRendered) {
-        position = (arc4random() % (totalPixels));
+    while (ptRendered && currentState == state::rendering) {
+        position = arc4random() % totalPixels;
         
         if (renderedPoints[position] == false) {
             renderedPoints[position] = true;
@@ -207,6 +237,7 @@ Color cast(const Ray3D &_r, int _bounces)
     }
     
     for (int i = 0; i < objects.size(); i++) {
+        // TODO closest object, not first
         // TODO legit color calculation.
         PhysicalObject* _object = objects[i];
 
