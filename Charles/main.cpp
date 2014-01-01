@@ -191,6 +191,7 @@ void render()
 Point2D getNextPoint()
 {
     // TODO allocate points to render on launch to avoid thread-related gaps.
+    // I think right now ~200 points are accidentally doubled.
     
 //    // If most points are rendered, switch to sweeping.
 //    if (totalRenderedPoints >= totalPixels * .95) {
@@ -228,12 +229,20 @@ Point2D getNextPoint()
 }
 
 /**
- * Cast a ray from a _point with direction _versor
+ * Cast a ray. Not yet recursive!
  **/
 Color cast(const Ray3D &_r, int _bounces)
 {
     if (_bounces >= 3) {
         return Color{0, 0, 0, 255};
+    }
+    
+    int closest = 0;
+    float closestDistance;
+    for (int i = 1; i < objects.size(); i++) {
+        PhysicalObject* _object = objects[i];
+        
+        
     }
     
     for (int i = 0; i < objects.size(); i++) {
