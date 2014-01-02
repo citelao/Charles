@@ -14,20 +14,20 @@ bool Sphere::collides(const Ray3D &r, Point3D* p) {
     double b = 2 * ((r.p.x - center.x) * r.uv.x + (r.p.y - center.y) * r.uv.y + (r.p.z - center.z) * r.uv.z);
     double c = pow(r.p.x - center.x, 2) + pow(r.p.y - center.y, 2) + pow(r.p.z - center.z, 2) - pow(radius, 2);
     
-    // double far = (-b + sqrt(pow(b, 2) - 4 * a * c)) / (2 * a);
+//    double far = (-b + sqrt(pow(b, 2) - 4 * a * c)) / (2 * a);
     double near = (-b - sqrt(pow(b, 2) - 4 * a * c)) / (2 * a);
     
     if(isnan(near)) {
         return false;
     }
     
-    if(near > 0) {
+    if(near < 0) {
         return false;
     }
     
     Point3D cp = r.p + r.uv * near;
     
-//    if((r.p - cp).magnitude()  0) {
+//    if((r.p - cp).magnitude() < 0) {
 //        std::cout<< "test";
 //    }
     

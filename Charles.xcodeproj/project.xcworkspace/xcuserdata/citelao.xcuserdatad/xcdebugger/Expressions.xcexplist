@@ -3,10 +3,15 @@
    version = "1.0">
    <ContextStates>
       <ContextState
-         contextName = "Sphere::collides(Ray3D const&amp;, Point3D*):Sphere.cpp">
-      </ContextState>
-      <ContextState
-         contextName = "Vector3D::magnitude():Vector3D.cpp">
+         contextName = "cast(Ray3D const&amp;, int):main.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "closest-&gt;collides(_r)">
+            </PersistentString>
+            <PersistentString
+               value = "j">
+            </PersistentString>
+         </PersistentStrings>
       </ContextState>
       <ContextState
          contextName = "cast(Point3D, Vector3D, int):main.cpp">
@@ -17,6 +22,12 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
+         contextName = "Sphere::collides(Ray3D const&amp;, Point3D*):Sphere.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "Vector3D::magnitude():Vector3D.cpp">
+      </ContextState>
+      <ContextState
          contextName = "main:main.cpp">
          <PersistentStrings>
             <PersistentString
@@ -25,18 +36,15 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "cast(Point3D, Vector3D):main.cpp">
-      </ContextState>
-      <ContextState
-         contextName = "cast(Ray3D const&amp;, int):main.cpp">
+         contextName = "render():main.cpp">
          <PersistentStrings>
             <PersistentString
-               value = "i">
-            </PersistentString>
-            <PersistentString
-               value = "j">
+               value = "uv.magnitude()">
             </PersistentString>
          </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "cast(Point3D, Vector3D):main.cpp">
       </ContextState>
    </ContextStates>
 </VariablesViewState>

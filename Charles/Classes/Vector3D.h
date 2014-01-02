@@ -30,10 +30,10 @@ class Vector3D {
     
     // Dot and cross products, respectively.
     double operator*(const Vector3D &nv) const;
-    Vector3D operator/(const Vector3D &nv) const;
+    Vector3D cross(const Vector3D &nv) const;
     
     double magnitude(void) const;
-    Vector3D unit(void) const;
+    Vector3D unitize(void) const;
 };
 
 // Vectors and Points are interchangeable mathwise, but I like keeping variables with different names.

@@ -7,3 +7,12 @@
 //
 
 #include "Ray3D.h"
+
+Ray3D Ray3D::traverse(const double  amount) const
+{
+    return Ray3D(
+                 Point3D(p.x + uv.x * amount,
+                         p.y + uv.y * amount,
+                         p.z + uv.z * amount),
+                 uv);
+}

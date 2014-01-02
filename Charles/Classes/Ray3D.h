@@ -22,6 +22,8 @@ public:
     
     Ray3D(double x, double y, double z, double dx, double dy, double dz)
         :p(x, y, z), uv(dx, dy, dz) {};
+    
+    Ray3D traverse(const double  amount) const;
 };
 
 #endif /* defined(__Charles__Ray3D__) */

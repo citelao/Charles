@@ -17,7 +17,7 @@ int main(int argc, const char * argv[])
     
     // Make spheres. Lots of spheres.
     double _r = 40;
-    for (double _zp = -200; _zp <= 0; _zp += 100) {
+    for (double _zp = 50; _zp < 600; _zp += 100) {
     for (double _xp = -200; _xp <= 200; _xp += 100) {
     for (double _yp = -200; _yp <= 200; _yp += 100) {
         objects.push_back(new Sphere(_xp, _yp, _zp, _r));
@@ -26,7 +26,7 @@ int main(int argc, const char * argv[])
     }
     
     // Light 'em up.
-    lights.push_back(Light(0, 0, -400, 10));
+    lights.push_back(Light(0, 0, 200, 10));
     
     // Create window
     sf::RenderWindow window(sf::VideoMode(w, h), "Charles");
@@ -113,7 +113,7 @@ int main(int argc, const char * argv[])
                 currentState = state::notifying;
             }
             
-            std::cout << totalRenderedPoints << "/" << totalPixels << " " << totalPixels-totalRenderedPoints << "\n";
+            //  std::cout << totalRenderedPoints << "/" << totalPixels << " " << totalPixels-totalRenderedPoints << "\n";
             
             // Clear screen.
             window.clear(sf::Color::Black);
@@ -135,45 +135,49 @@ void render()
 {
     std::cout << "Render thread started! \n";
     
-    // TODO rewrite to use frustrum
-    double szz = screenPos.z - camera.z;
-    double szx = screenPos.x - camera.x;
-    double szy = screenPos.y - camera.y;
-    
-    Vector3D scv = screenPos - camera;
+    // w/(2tan(fov/2))
+    double screenDistance = w / pixelsPerMeter / 2 / tan(M_PI * fov / 2 / 180);
     
     while (currentState == state::rendering) {
-        // Get an unrendered point
+        // Get an unrendered point & convert its onscreen position to 2D deviation from eye ray.
         Point2D screenPoint = getNextPoint();
+        Point2D offsetPoint = Point2D{screenPoint.x - w / 2, h / 2 - screenPoint.y };
         
-        /****
-         * Construct unit vector pointing from eye to screen pixel as sphere.
-         ****
-         * Screen is stored mathematically as top-left corner of screen rectangle, which
-         * needs to be transformed into a sphere. See math projection.
-         * See:
-         * - http://en.wikipedia.org/wiki/Curvilinear_perspective
-         * - http://en.wikipedia.org/wiki/3D_projection
-         * - http://en.wikipedia.org/wiki/Camera_matrix
-         * - and the book
-         **/
+        Vector3D offset = Vector3D(offsetPoint.x / pixelsPerMeter, offsetPoint.y / pixelsPerMeter, 0);
+
+        // Create a coordinate system relative to eye ray.
+        // Z' is eye's uv.
+        // X' is parallel to X-Z plane, at least for now. Arbitrary rotation to come later. (TODO)
+        // X' is also perpendicular to Z', the eye's vector. Their dot product is 0.
+        // Y' should be Z' cross X'.
+        Vector3D cZPrime = eye.uv;
+        Vector3D cXPrime = Vector3D(0, 1, 0).cross(cZPrime); // TODO ??
+        Vector3D cYPrime = cZPrime.cross(cXPrime);
         
-        // Use the 3D Pythagorean theorem: h**2 = x**2 + y**2 + z**2
-        // or (since we know the hypotenuse), sqrt(h**2 - x**2 - y**2) = z
-        double sphereZ = sqrt(
-          pow(szz, 2)
-          - pow(szx + screenPoint.x, 2)
-          - pow(szy + screenPoint.y, 2)
-        );
+        Ray3D cPrime = Ray3D(eye.traverse(screenDistance).p,
+                             cZPrime + cXPrime + cYPrime);
         
-        // Create a vector from origin to spherical screenspace and make it a unit vector.
-        Vector3D uv = (scv + Vector3D(screenPoint.x, screenPoint.y, sphereZ)).unit();
-        Point3D p = Point3D(screenPos.x + screenPoint.x, screenPos.y + screenPoint.y, screenPos.z);
+        // Combine offset and coordinate system.
+        Vector3D cPrimeOffset = Vector3D(cPrime.uv.x * offset.x,
+                                         cPrime.uv.y * offset.y,
+                                         cPrime.uv.z * offset.z);
+
+        Point3D p = cPrime.p + cPrimeOffset;
+        Vector3D uv = (p - eye.p).unitize();
+        
+        // Parallel projection!
+        // Vector3D uv = Vector3D(0,0,-1);
         
         Ray3D r = Ray3D(p, uv);
         
         // Cast a ray from the screen point in the newly calculated direction.
         Color c = cast(r);
+        
+        if (debug == mode::onscreen && ((screenPoint.x == 0 && screenPoint.y == 0) ||
+            (screenPoint.x == 256 && screenPoint.y == 256) ||
+            (screenPoint.x == 511 && screenPoint.y == 511))) {
+            c = Color{255,255,255,255};
+        }
         
         // Write the RGBA codes to the unsigned char array.
         renderImage[((screenPoint.y * w) + screenPoint.x) * 4]     = c.r;
@@ -192,20 +196,6 @@ Point2D getNextPoint()
 {
     // TODO allocate points to render on launch to avoid thread-related gaps.
     // I think right now ~200 points are accidentally doubled.
-    
-//    // If most points are rendered, switch to sweeping.
-//    if (totalRenderedPoints >= totalPixels * .95) {
-//        for (int i = 0; i < totalPixels; i++) {
-//            if (!renderedPoints[i]) {
-//                int y = i / w;
-//                int x = i - y * w;
-//                
-//                renderedPoints[i] = true;
-//                
-//                return Point2D{x, y};
-//            }
-//        }
-//    }
     
     int position;
     bool ptRendered = true;
@@ -237,91 +227,96 @@ Color cast(const Ray3D &_r, int _bounces)
         return Color{0, 0, 0, 255};
     }
     
-    int closest = 0;
-    float closestDistance;
-    for (int i = 1; i < objects.size(); i++) {
+    // Find the closest object.
+    PhysicalObject* closest = NULL;
+    Point3D collision;
+    double closestDistance;
+    for (int i = 0; i < objects.size(); i++) {
         PhysicalObject* _object = objects[i];
         
+        Point3D _collision;
+        bool collides = _object->collides(_r, &_collision);
         
+        if (collides) { // Ray collides with object.
+            double distance = (_r.p - _collision).magnitude();
+            
+            if (distance < closestDistance || closest == NULL) {
+                closestDistance = distance;
+                collision = _collision;
+                closest = _object;
+            }
+        }
     }
     
-    for (int i = 0; i < objects.size(); i++) {
-        // TODO closest object, not first
-        // TODO legit color calculation.
-        PhysicalObject* _object = objects[i];
-
-        Point3D collision;
-        bool collides = _object->collides(_r, &collision);
+    if (closest != NULL) { // If there was a collision.
+        // Increment number of collided rays for stat keeping.
+        collided++;
         
-        if (collides == true) { // Ray collides with sphere.
-            
-            if (debug == mode::onscreen) {
-                return Color{255, 255, 255, 255};
-            }
-            
-            collided++;
-            
-            // TODO why isn't this unitized
-            Vector3D normal = _object->normal(collision);
-            
-            if (debug == mode::normal) {
-                Vector3D un = normal.unit();
-                return Color{(unsigned char)(126 + 126 * un.x), (unsigned char)(126 + 126 * un.y), (unsigned char)(126 + 126 * un.z), 255};
-            }
-            
-            // Send out a light ray
-            Vector3D light = collision - lights[0].center;
-            double cross = light * normal;
-            
-            // Send out a reflection ray
-            // cast(contactpt, normal, _bounces + 1);
-            // Send out a refraction ray
-            // cast(contactpt, _uv * diff, _bounces + 1);
-            
-            // Color!
-            double rangeness = 1 / sqrt(light.magnitude()) * lights[0].intensity;
-            
-            if (rangeness <= 0) {
-                unsigned char g = (unsigned char) (debug == mode::light) ? 255 : 0;
-                return Color{0, g, 0, 255};
-            }
-            
-            double fluxness = - cross / (light.magnitude() * normal.magnitude());
-            
-            if (fluxness <= 0) {
-                unsigned char r = (unsigned char) (debug == mode::light) ? 255 : 0;
-                return Color{r, 0, 0, 255};
-            }
-            
-            // Send out a shadow ray
-            double shadow = 1;
-            for (int j = 0; j < objects.size(); j++) {
-                if(j==i) {
-                    continue;
-                }
-                
-                PhysicalObject* _pblocker = objects[j];
-                Point3D contacts;
-                
-                if (_pblocker->collides(Ray3D(collision, light), &contacts)) {
-                    if (debug == mode::shadows) {
-                        return Color{255,0,0,255};
-                    }
-                    
-                    shadow = 0;
-                }
-                
-                checks++;
-            }
-            
-            double b = 255 * rangeness * fluxness * shadow;
-            
-            if ( b > 255) {
-                b = 255;
-            }
-            
-            return Color{(unsigned char) b, (unsigned char) (b * 130 / 255), (unsigned char) b, 255};
+        if (debug == mode::onscreen) {
+            return Color{255, 255, 255, 255};
         }
+        
+        // TODO why isn't this unitized
+        Vector3D normal = closest->normal(collision);
+        
+        if (debug == mode::normal) {
+            Vector3D un = normal.unitize();
+            return Color{(unsigned char)(126 + 126 * un.x), (unsigned char)(126 + 126 * un.y), (unsigned char)(126 + 126 * un.z), 255};
+        }
+        
+        // Send out a light ray
+        Vector3D light = collision - lights[0].center;
+        double cross = light * normal;
+        
+        // Send out a reflection ray
+        // cast(contactpt, normal, _bounces + 1);
+        // Send out a refraction ray
+        // cast(contactpt, _uv * diff, _bounces + 1);
+        
+        // Color!
+        double rangeness = 1 / sqrt(light.magnitude()) * lights[0].intensity;
+        
+        if (rangeness <= 0) {
+            unsigned char g = (unsigned char) (debug == mode::light) ? 255 : 0;
+            return Color{0, g, 0, 255};
+        }
+        
+        double fluxness = - cross / (light.magnitude() * normal.magnitude());
+        
+        if (fluxness <= 0) {
+            unsigned char r = (unsigned char) (debug == mode::light) ? 255 : 0;
+            return Color{r, 0, 0, 255};
+        }
+        
+        // Send out a shadow ray
+        double shadow = 1;
+        for (int j = 0; j < objects.size(); j++) {
+            PhysicalObject* _pblocker = objects[j];
+            Point3D contacts;
+            
+            if(_pblocker == closest) {
+                continue;
+            }
+            
+            if (_pblocker->collides(Ray3D(collision, light), &contacts)) {
+                if (debug == mode::shadows) {
+                    return Color{255,0,0,255};
+                }
+                
+                shadow = 0;
+            }
+            
+            checks++;
+        }
+        
+        // TODO this ain't how light works.
+        double b = 255 * rangeness * fluxness * shadow;
+        
+        if ( b > 255) {
+            b = 255;
+        }
+        
+        return Color{(unsigned char) b, (unsigned char) (b * 130 / 255), (unsigned char) b, 255};
     }
     
     return Color{0, 0, 0, 255};

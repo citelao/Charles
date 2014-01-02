@@ -66,7 +66,7 @@ enum state {
  **/
 
 // Debug mode
-mode debug = mode::unrendered;
+mode debug = mode::shadows;
 
 // Renderer settings
 int w = 512;
@@ -78,14 +78,16 @@ unsigned char* renderImage = new unsigned char[totalPixels * 4];
 int collided = 0;
 int checks = 0;
 
-state currentState = rendering;
+state currentState = state::rendering;
 int totalRenderedPoints = 0;
 bool* renderedPoints = new bool[totalPixels];
 
 // Camera configuration
-Point3D screenPos(- w / 2, - h / 2, 0); // TODO, since we use projection now.
-Point3D camera(0, 0, - 500);
+Ray3D eye(0, 0, 0, 0, 0, 1);
+double pixelsPerMeter = 1; // TODO?
+double fov = 85;
 
+// Objectspace!
 std::vector<PhysicalObject*> objects {};
 std::vector<Light> lights {};
 

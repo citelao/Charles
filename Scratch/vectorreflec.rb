@@ -19,7 +19,7 @@ class Reflect
 	attr_accessor :i, :n
 
 	def go
-		m = (-@i * @n) * @n
+		# m = (-@i * @n) * @n
 		f = i + 2 * @n
 
 		return Vector.new(f.x, f.y)
