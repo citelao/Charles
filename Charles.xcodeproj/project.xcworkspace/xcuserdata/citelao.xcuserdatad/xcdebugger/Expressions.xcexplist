@@ -3,21 +3,21 @@
    version = "1.0">
    <ContextStates>
       <ContextState
+         contextName = "cast(Point3D, Vector3D, int):main.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "cross - ">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "cast(Ray3D const&amp;, int):main.cpp">
          <PersistentStrings>
             <PersistentString
                value = "closest-&gt;collides(_r)">
             </PersistentString>
             <PersistentString
-               value = "j">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "cast(Point3D, Vector3D, int):main.cpp">
-         <PersistentStrings>
-            <PersistentString
-               value = "cross - ">
+               value = "lights[0].center - collision">
             </PersistentString>
          </PersistentStrings>
       </ContextState>

@@ -51,6 +51,8 @@ enum mode {
     onscreen,    // should print all onscreen objects as white, regardless of illumination
     shadows,     // should help show shadows
     normal,      // should display normal line; r: x, g: y, b: z
+    normalz,     // should display normal z value
+    lightz,      // should display light ray z value
     unrendered,  // shows unrendered pixels as purple.
     light        // not too terribly meaningful
 };
@@ -66,7 +68,7 @@ enum state {
  **/
 
 // Debug mode
-mode debug = mode::shadows;
+mode debug = mode::none;
 
 // Renderer settings
 int w = 512;
@@ -84,7 +86,7 @@ bool* renderedPoints = new bool[totalPixels];
 
 // Camera configuration
 Ray3D eye(0, 0, 0, 0, 0, 1);
-double pixelsPerMeter = 1; // TODO?
+double pixelsPerMeter = 120;
 double fov = 85;
 
 // Objectspace!

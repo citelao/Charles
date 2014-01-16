@@ -10,9 +10,6 @@
 
 Ray3D Ray3D::traverse(const double  amount) const
 {
-    return Ray3D(
-                 Point3D(p.x + uv.x * amount,
-                         p.y + uv.y * amount,
-                         p.z + uv.z * amount),
+    return Ray3D(p + uv * amount,
                  uv);
 }

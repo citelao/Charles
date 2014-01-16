@@ -17,16 +17,20 @@ int main(int argc, const char * argv[])
     
     // Make spheres. Lots of spheres.
     double _r = 40;
-    for (double _zp = 50; _zp < 600; _zp += 100) {
+    for (double _zp = 200; _zp < 600; _zp += 100) {
     for (double _xp = -200; _xp <= 200; _xp += 100) {
     for (double _yp = -200; _yp <= 200; _yp += 100) {
         objects.push_back(new Sphere(_xp, _yp, _zp, _r));
     }
     }
     }
+
+    objects.push_back(new Sphere(0, -1000000, 0, 999900));
+//    objects.push_back(new Sphere(0, -200, 100, 80));
     
     // Light 'em up.
-    lights.push_back(Light(0, 0, 200, 10));
+    lights.push_back(Light(0, 300, 300, 120));
+//    lights.push_back(Light(0, 240, 100, 900));
     
     // Create window
     sf::RenderWindow window(sf::VideoMode(w, h), "Charles");
@@ -101,6 +105,7 @@ int main(int argc, const char * argv[])
         else if (currentState == state::rendering) // Update screen if rendering
         {
             // If we're done rendering everything, stop the rendering. Pretty self explanatory.
+            // This code is O(n) and dumb.
             bool done = true;
             for (int i = 0; i < totalPixels; i++) {
                 if (!renderedPoints[i]) {
@@ -150,6 +155,7 @@ void render()
         // X' is parallel to X-Z plane, at least for now. Arbitrary rotation to come later. (TODO)
         // X' is also perpendicular to Z', the eye's vector. Their dot product is 0.
         // Y' should be Z' cross X'.
+        // Thanks Morgan and Thomas Redding!
         Vector3D cZPrime = eye.uv;
         Vector3D cXPrime = Vector3D(0, 1, 0).cross(cZPrime); // TODO ??
         Vector3D cYPrime = cZPrime.cross(cXPrime);
@@ -168,7 +174,12 @@ void render()
         // Parallel projection!
         // Vector3D uv = Vector3D(0,0,-1);
         
-        Ray3D r = Ray3D(p, uv);
+        // Start from near plane.
+        // Ray3D r = Ray3D(p, uv);
+        
+        // Start from eye
+        Ray3D r = Ray3D(eye.p, uv);
+        
         
         // Cast a ray from the screen point in the newly calculated direction.
         Color c = cast(r);
@@ -207,7 +218,6 @@ Point2D getNextPoint()
             renderedPoints[position] = true;
             ptRendered = false;
         }
-        
     }
     
     renderedPoints[position] = true;
@@ -223,10 +233,6 @@ Point2D getNextPoint()
  **/
 Color cast(const Ray3D &_r, int _bounces)
 {
-    if (_bounces >= 3) {
-        return Color{0, 0, 0, 255};
-    }
-    
     // Find the closest object.
     PhysicalObject* closest = NULL;
     Point3D collision;
@@ -237,6 +243,7 @@ Color cast(const Ray3D &_r, int _bounces)
         Point3D _collision;
         bool collides = _object->collides(_r, &_collision);
         
+        // TODO *extremely* inefficient
         if (collides) { // Ray collides with object.
             double distance = (_r.p - _collision).magnitude();
             
@@ -256,20 +263,32 @@ Color cast(const Ray3D &_r, int _bounces)
             return Color{255, 255, 255, 255};
         }
         
-        // TODO why isn't this unitized
         Vector3D normal = closest->normal(collision);
         
         if (debug == mode::normal) {
-            Vector3D un = normal.unitize();
-            return Color{(unsigned char)(126 + 126 * un.x), (unsigned char)(126 + 126 * un.y), (unsigned char)(126 + 126 * un.z), 255};
+            return Color{(unsigned char)(126 + 126 * normal.x), (unsigned char)(126 + 126 * normal.y), (unsigned char)(126 + 126 * normal.z), 255};
+        }
+        
+        if (debug == mode::normalz) {
+            unsigned char b = 126-126 * normal.z;
+            
+            return Color{b,b,b,255};
         }
         
         // Send out a light ray
         Vector3D light = collision - lights[0].center;
         double cross = light * normal;
         
+        if (debug == mode::lightz) {
+            unsigned char b = 126-126 * light.unitize().z;
+            
+            return Color{b,b,b,255};
+        }
+        
         // Send out a reflection ray
-        // cast(contactpt, normal, _bounces + 1);
+        // if (_bounces < 0) {
+        //    return cast(Ray3D(collision, normal), _bounces + 1);
+        // }
         // Send out a refraction ray
         // cast(contactpt, _uv * diff, _bounces + 1);
         
@@ -294,11 +313,11 @@ Color cast(const Ray3D &_r, int _bounces)
             PhysicalObject* _pblocker = objects[j];
             Point3D contacts;
             
-            if(_pblocker == closest) {
+            if (_pblocker == closest) {
                 continue;
             }
             
-            if (_pblocker->collides(Ray3D(collision, light), &contacts)) {
+            if (_pblocker->collides(Ray3D(collision, lights[0].center - collision), &contacts)) {
                 if (debug == mode::shadows) {
                     return Color{255,0,0,255};
                 }
@@ -310,7 +329,8 @@ Color cast(const Ray3D &_r, int _bounces)
         }
         
         // TODO this ain't how light works.
-        double b = 255 * rangeness * fluxness * shadow;
+//        double b = 255 * 1 * fluxness * shadow;
+        double b = 255 * shadow * lights[0].intensity * (normal * (lights[0].center - collision)) / pow((lights[0].center - collision).magnitude(), 2);
         
         if ( b > 255) {
             b = 255;

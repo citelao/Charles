@@ -15,8 +15,8 @@
 
 class PhysicalObject {
 public:
-    virtual bool collides(const Ray3D &r, Point3D* p);
-    virtual Vector3D normal(const Point3D &p);
+    virtual bool collides(const Ray3D &r, Point3D* p) = 0;
+    virtual Vector3D normal(const Point3D &p) = 0;
     virtual ~PhysicalObject() {}
 };
 
