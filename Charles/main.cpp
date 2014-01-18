@@ -164,7 +164,7 @@ void render()
                      (cYPrime * offset.y) +
                      (cZPrime * offset.z);
         
-        Vector3D uv = eye.traverse(screenDistance).p + p;
+        Vector3D uv = ((eye.traverse(screenDistance).p + p) - eye.p).unitize();
         
         // Start from eye
         Ray3D r = Ray3D(eye.p, uv);
