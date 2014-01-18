@@ -35,12 +35,20 @@ double Vector3D::operator*(const Vector3D &nv) const
     return x * nv.x + y * nv.y + z * nv.z;
 }
 
+// Cross product
+Vector3D Vector3D::cross(const Vector3D &nv) const
+{
+    return Vector3D(y * nv.z - z * nv.y,
+                    z * nv.x - x * nv.z,
+                    x * nv.y - y * nv.x);
+}
+
 double Vector3D::magnitude(void) const
 {
     return sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2));
 }
 
-Vector3D Vector3D::unit(void) const
+Vector3D Vector3D::unitize(void) const
 {
     return *this / this->magnitude(); // todo idfk
 }

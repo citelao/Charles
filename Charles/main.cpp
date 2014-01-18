@@ -16,27 +16,23 @@ int main(int argc, const char * argv[])
     std::cout << "Go, Charles!\n";
     
     // Make spheres. Lots of spheres.
-//    double _r = 40;
-//    for (double _zp =  80; _zp <= 680; _zp += 150) {
-//        for (double _xp = -400; _xp <= 400; _xp += 150) {
-//            for (double _yp = -400; _yp <= 400; _yp += 150) {
-//                double _i = 0;
-//                objects.push_back(new Sphere(_xp + _i, _yp + _i, _zp + _i, _r));
-//            }
-//        }
-//    }
-//    objects.push_back(new Sphere(0, 0, 160, 20));
-//    objects.push_back(new Sphere(0, 0, 200, 80));
-    
-    objects.push_back(new Sphere(-200, 40, 0, 120));
-    objects.push_back(new Sphere(-40, 0, 0, 20));
-    objects.push_back(new Sphere(-80, 0, 0, 20));
-    
-    // Quicksort z order.
-    // TODO
+    double _r = 40;
+    for (double _zp = 200; _zp < 600; _zp += 100) {
+    for (double _xp = -200; _xp <= 200; _xp += 100) {
+    for (double _yp = -200; _yp <= 200; _yp += 100) {
+        objects.push_back(new Sphere(_xp, _yp, _zp, _r));
+    }
+    }
+    }
+
+//    objects.push_back(new Sphere(0, -1000000, 0, 999900));
+//    objects.push_back(new Sphere(0, -200, 100, 80));
+//    objects.push_back(new Sphere(0, 0, 300, 40));
+//    objects.push_back(new Sphere(-280, 0, 300, 40));
     
     // Light 'em up.
-    lights.push_back(Light(0, 0, -30, 10));
+//    lights.push_back(Light(0, 300, 300, 120));
+    lights.push_back(Light(-150, 0, 0, 200));
     
     // Create window
     sf::RenderWindow window(sf::VideoMode(w, h), "Charles");
@@ -48,15 +44,11 @@ int main(int argc, const char * argv[])
     
     /** 
      * Start render threads.
-     * One for each quarter of the screen.
      **/
-    
-    // TODO replace with atomic bitmap for each pixel and pick at random.
-    threads = 4;
-    std::thread rt1(&render, 0, 0, w/2, h/2);
-    std::thread rt2(&render, w/2, 0, w/2, h/2);
-    std::thread rt3(&render, 0, h/2, w/2, h/2);
-    std::thread rt4(&render, w/2, h/2, w/2, h/2);
+    std::thread rt1(&render);
+    std::thread rt2(&render);
+    std::thread rt3(&render);
+    std::thread rt4(&render);
     rt1.detach();
     rt2.detach();
     rt3.detach();
@@ -69,6 +61,10 @@ int main(int argc, const char * argv[])
     
     while(window.isOpen())
     {
+        /**
+         * SFML stuff
+         **/
+        
         // Check for exit command.
         sf::Event event;
         while (window.pollEvent(event))
@@ -78,10 +74,51 @@ int main(int argc, const char * argv[])
                 window.close();
         }
         
-        if(threads > -1)
+        /**
+         * Leader thread debug & optim stuff
+         **/
+        
+        // Show unrendered points in the correct debug mode
+        if (debug == mode::unrendered) {
+            for (int i = 0; i < totalPixels; i++) {
+                if (renderedPoints[i] == false) {
+                    renderImage[i * 4]   = 255; // r
+                    renderImage[i * 4+1] =   0; // g
+                    renderImage[i * 4+2] = 255; // b
+                    renderImage[i * 4+3] = 255; // a
+                }
+            }
+        }
+        
+        /**
+         * Display stuff
+         **/
+        
+        // Determine correct action based on state
+        if (currentState == state::notifying) // Print out statistics once if done rendering
         {
-            if(threads == 0)
-                threads--;
+            std::cout << "Done Rendering \n";
+            std::cout << "Total Points Rendered: " << totalRenderedPoints << "/" << totalPixels << "\n";
+            std::cout << "Collided rays: " << collided << "\n";
+            std::cout << "Shadow checks: " << checks << "\n";
+            
+            currentState = state::done;
+        }
+        else if (currentState == state::rendering) // Update screen if rendering
+        {
+            // If we're done rendering everything, stop the rendering. Pretty self explanatory.
+            // This code is O(n) and dumb.
+            bool done = true;
+            for (int i = 0; i < totalPixels; i++) {
+                if (!renderedPoints[i]) {
+                    done = false;
+                }
+            }
+            
+            if (done)
+            {
+                currentState = state::notifying;
+            }
             
             // Clear screen.
             window.clear(sf::Color::Black);
@@ -93,144 +130,196 @@ int main(int argc, const char * argv[])
             // Display the frame
             window.draw(sprite);
             window.display();
-        } else if(threads == -1) {
-            std::cout << "Done Rendering \n";
-            std::cout << "Collided rays: " << collided << "\n";
-            std::cout << "Shadow checks: " << checks << "\n";
-            threads--;
         }
     }
     
     return 0;
 }
 
-void render(int _x, int _y, int _w, int _h)
+void render()
 {
     std::cout << "Render thread started! \n";
     
-    double szz = screenPos.z - camera.z;
-    double szx = screenPos.x - camera.x;
-    double szy = screenPos.y - camera.y;
+    // w/(2tan(fov/2))
+    double screenDistance = w / pixelsPerMeter / 2 / tan(M_PI * fov / 2 / 180);
     
-    Vector3D scv = screenPos - camera;
-    
-    // For each row from starting row to height,
-    // scan through each column from starting col to width.
-    for (int cy = _y; cy < _y + _h; cy++) {
-        for (int cx = _x; cx < _x + _w; cx++ ) {
-            /****
-             * Construct unit vector pointing from eye to screen pixel as sphere. 
-             ****
-             * Screen is stored mathematically as top-left corner of screen rectangle, which
-             * needs to be transformed into a sphere. See math projection.
-             * See:
-             * - http://en.wikipedia.org/wiki/Curvilinear_perspective
-             * - http://en.wikipedia.org/wiki/3D_projection
-             * - http://en.wikipedia.org/wiki/Camera_matrix
-             * - and the book
-             **/
-            
-            // Use the 3D Pythagorean theorem: h**2 = x**2 + y**2 + z**2
-            // or (since we know the hypotenuse), sqrt(h**2 - x**2 - y**2) = z
-            double sphereZ = sqrt(
-                pow(szz, 2)
-              - pow(szx + cx, 2)
-              - pow(szy + cy, 2)
-            );
-            
-            // Create a vector from origin to spherical screenspace and make it a unit vector.
-            Vector3D uv = (scv + Vector3D(cx, cy, sphereZ)).unit();
-            Point3D p = Point3D(screenPos.x + cx, screenPos.y + cy, screenPos.z);
-            
-            Ray3D r = Ray3D(p, uv);
-            
-            // Cast a ray from the screen point in the newly calculated direction.
-            Color c = cast(r);
-            
-            // Write the RGBA codes to the unsigned char array.
-            renderImage[((cy * w) + cx) * 4]     = c.r;
-            renderImage[((cy * w) + cx) * 4 + 1] = c.g;
-            renderImage[((cy * w) + cx) * 4 + 2] = c.b;
-            renderImage[((cy * w) + cx) * 4 + 3] = c.a;
+    while (currentState == state::rendering) {
+        // Get an unrendered point & convert its onscreen position to 2D deviation from eye ray.
+        Point2D screenPoint = getNextPoint();
+        Point2D offsetPoint = Point2D{screenPoint.x - w / 2, h / 2 - screenPoint.y };
+        
+        Vector3D offset = Vector3D(offsetPoint.x / pixelsPerMeter, offsetPoint.y / pixelsPerMeter, 0);
+
+        // Create a coordinate system relative to eye ray.
+        // Z' is eye's uv.
+        // X' is parallel to X-Z plane, at least for now. Arbitrary rotation to come later. (TODO)
+        // X' is also perpendicular to Z', the eye's vector. Their dot product is 0.
+        // Y' should be Z' cross X'.
+        // Thanks Morgan and Thomas Redding!
+        Vector3D cZPrime = eye.uv;
+        Vector3D cXPrime = Vector3D(cZPrime.z, 0, -cZPrime.x);
+        Vector3D cYPrime = cZPrime.cross(cXPrime);
+        
+        Vector3D p = (cXPrime * offset.x) +
+                     (cYPrime * offset.y) +
+                     (cZPrime * offset.z);
+        
+        Vector3D uv = eye.traverse(screenDistance).p + p;
+        
+        // Start from eye
+        Ray3D r = Ray3D(eye.p, uv);
+        
+        
+        // Cast a ray from the screen point in the newly calculated direction.
+        Color c = cast(r);
+        
+        if (debug == mode::onscreen && ((screenPoint.x == 0 && screenPoint.y == 0) ||
+            (screenPoint.x == 256 && screenPoint.y == 256) ||
+            (screenPoint.x == 511 && screenPoint.y == 511))) {
+            c = Color{255,255,255,255};
         }
+        
+        // Write the RGBA codes to the unsigned char array.
+        renderImage[((screenPoint.y * w) + screenPoint.x) * 4]     = c.r;
+        renderImage[((screenPoint.y * w) + screenPoint.x) * 4 + 1] = c.g;
+        renderImage[((screenPoint.y * w) + screenPoint.x) * 4 + 2] = c.b;
+        renderImage[((screenPoint.y * w) + screenPoint.x) * 4 + 3] = 255; // Alpha must always be 255 to show.
+        
+        // Increment total number of rendered points.
+        totalRenderedPoints++;
     }
-    
-    threads--;
-    
+
     std::cout << "Render thread completed! \n";
 }
 
+Point2D getNextPoint()
+{
+    // TODO allocate points to render on launch to avoid thread-related gaps.
+    // I think right now ~200 points are accidentally doubled.
+    
+    int position;
+    bool ptRendered = true;
+    
+    while (ptRendered && currentState == state::rendering) {
+        position = arc4random() % totalPixels;
+        
+        if (renderedPoints[position] == false) {
+            renderedPoints[position] = true;
+            ptRendered = false;
+        }
+    }
+    
+    renderedPoints[position] = true;
+    
+    int y = position / w;
+    int x = position - y * w;
+    
+    return Point2D{x, y};
+}
+
 /**
- * Cast a ray from a _point with direction _versor
+ * Cast a ray. Not yet recursive!
  **/
 Color cast(const Ray3D &_r, int _bounces)
 {
-    if (_bounces >= 3) {
-        return Color{0, 0, 0, 255};
+    // Find the closest object.
+    PhysicalObject* closest = NULL;
+    Point3D collision;
+    double closestDistance;
+    for (int i = 0; i < objects.size(); i++) {
+        PhysicalObject* _object = objects[i];
+        
+        Point3D _collision;
+        bool collides = _object->collides(_r, &_collision);
+        
+        // TODO *extremely* inefficient
+        if (collides) { // Ray collides with object.
+            double distance = (_r.p - _collision).magnitude();
+            
+            if (distance < closestDistance || closest == NULL) {
+                closestDistance = distance;
+                collision = _collision;
+                closest = _object;
+            }
+        }
     }
     
-    for (int i = 0; i < objects.size(); i++) {
-        // TODO legit color calculation.
-        PhysicalObject* _object = objects[i];
-
-        Point3D collision;
-        bool collides = _object->collides(_r, &collision);
+    if (closest != NULL) { // If there was a collision.
+        // Increment number of collided rays for stat keeping.
+        collided++;
         
-        if (collides == true) { // Ray collides with sphere.
+        if (debug == mode::onscreen) {
+            return Color{255, 255, 255, 255};
+        }
+        
+        Vector3D normal = closest->normal(collision);
+        
+        if (debug == mode::normal) {
+            return Color{(unsigned char)(126 + 126 * normal.x), (unsigned char)(126 + 126 * normal.y), (unsigned char)(126 + 126 * normal.z), 255};
+        }
+        
+        if (debug == mode::normalz) {
+            unsigned char b = 126-126 * normal.z;
             
-            collided++;
+            return Color{b,b,b,255};
+        }
+        
+        // Send out a reflection ray
+        // if (_bounces < 0) {
+        //    return cast(Ray3D(collision, normal), _bounces + 1);
+        // }
+        
+        // Send out a refraction ray
+        // cast(contactpt, _uv * diff, _bounces + 1);
+        
+        // Send out a light ray
+        // Using Lambertian reflectance.
+        Vector3D light = lights[0].center - collision;
+        
+        if (debug == mode::lightz) {
+            unsigned char b = 126-126 * light.unitize().z;
             
-            Vector3D normal = _object->normal(collision);
+            return Color{b,b,b,255};
+        }
+        
+        double lambertian = (normal * light) / pow((light).magnitude(), 2);
+        
+        if (lambertian < 0) {
+            lambertian = 0;
+        }
+        
+        // Send out a shadow ray
+        double shadow = 1;
+        for (int j = 0; j < objects.size(); j++) {
+            PhysicalObject* _pblocker = objects[j];
+            Point3D contacts;
             
-            // Send out a light ray
-            Vector3D light = collision - lights[0].center;
-            double cross = light * normal;
-            
-            // Send out a reflection ray
-            // cast(contactpt, normal, _bounces + 1);
-            // Send out a refraction ray
-            // cast(contactpt, _uv * diff, _bounces + 1);
-            
-            // Color!
-            double rangeness = 1 / sqrt(light.magnitude()) * lights[0].intensity;
-            
-            if (rangeness <= 0) {
-                unsigned char g = (unsigned char) (debug) ? 255 : 0;
-                return Color{0, g, 0, 255};
+            if (_pblocker == closest) {
+                continue;
             }
             
-            double fluxness = - cross / (light.magnitude() * normal.magnitude());
-            
-            if (fluxness <= 0) {
-                unsigned char r = (unsigned char) (debug) ? 255 : 0;
-                return Color{r, 0, 0, 255};
-            }
-            
-            // Send out a shadow ray
-            double shadow = 1;
-            for (int j = 0; j < objects.size(); j++) {
-                if(j==i) {
+            if (_pblocker->collides(Ray3D(collision, lights[0].center - collision), &contacts)) {
+                if ((contacts - collision).magnitude() > (lights[0].center - collision).magnitude()) {
                     continue;
                 }
                 
-                PhysicalObject* _pblocker = objects[j];
-                Point3D contacts;
-                
-                if (_pblocker->collides(Ray3D(collision, light), &contacts)) {
-                    shadow = 0;
+                if (debug == mode::shadows) {
+                    return Color{255,0,0,255};
                 }
                 
-                checks++;
+                shadow = 0;
             }
             
-            double b = 255 * rangeness * fluxness * shadow;
-            
-            if ( b > 255) {
-                b = 255;
-            }
-            
-            return Color{(unsigned char) b, (unsigned char) (b * 130 / 255), (unsigned char) b, 255};
+            checks++;
         }
+        
+        double b = 255 * shadow * lights[0].intensity * lambertian;
+        
+        if ( b > 255) {
+            b = 255;
+        }
+        
+        return Color{(unsigned char) b, (unsigned char) (b * 130 / 255), (unsigned char) b, 255};
     }
     
     return Color{0, 0, 0, 255};

@@ -11,7 +11,6 @@
 
 #include <iostream>
 #include <math.h>
-#include "Point3D.h"
 #include "PhysicalObject.h"
 
 class Sphere : public PhysicalObject {

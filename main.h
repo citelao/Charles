@@ -20,7 +20,6 @@
 #include <vector>
 #include "Ray3D.h"
 #include "Vector3D.h"
-#include "Point3D.h"
 #include "Sphere.h"
 #include "Light.h"
 
@@ -35,27 +34,71 @@ struct Color {
 };
 
 /**
+ * Point & Vector classes
+ **/
+struct Point2D {
+    int x;
+    int y;
+};
+
+/**
+ * Enums
+ **/
+
+// TODO set to flags
+enum mode {
+    none,
+    onscreen,    // should print all onscreen objects as white, regardless of illumination
+    shadows,     // should help show shadows
+    normal,      // should display normal line; r: x, g: y, b: z
+    normalz,     // should display normal z value
+    lightz,      // should display light ray z value
+    unrendered,  // shows unrendered pixels as purple.
+    light        // not too terribly meaningful
+};
+
+enum state {
+    rendering,
+    notifying,
+    done
+};
+
+/**
  * Define them variables.
  **/
-bool debug = false;
-int collided = 0;
-int checks = 0;
-int threads;
 
+// Debug mode
+mode debug = mode::none;
+
+// Renderer settings
 int w = 512;
 int h = 512;
-unsigned char *renderImage = new unsigned char[w * h * 4];
+int totalPixels = w * h;
+unsigned char* renderImage = new unsigned char[totalPixels * 4];
 
-Point3D screenPos(- w / 2, - h / 2, 0); // TODO, since we use projection now.
-Point3D camera(0, 0, - 500);
+// Renderer statistics
+int collided = 0;
+int checks = 0;
 
+state currentState = state::rendering;
+int totalRenderedPoints = 0;
+bool* renderedPoints = new bool[totalPixels];
+
+// Camera configuration
+Ray3D eye(Point3D(0, 0, 0), Vector3D(0, 1, 1).unitize());
+double pixelsPerMeter = 120;
+double fov = 85;
+
+// Objectspace!
 std::vector<PhysicalObject*> objects {};
 std::vector<Light> lights {};
 
 /**
  * Function time!
  **/
-void render(int _x, int _y, int _w, int _h);
+void render();
+Point2D getNextPoint();
+
 Color cast(const Ray3D &r, int _bounces = 0);
 
 #endif

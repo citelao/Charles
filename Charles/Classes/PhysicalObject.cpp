@@ -7,12 +7,3 @@
 //
 
 #include "PhysicalObject.h"
-
-bool PhysicalObject::collides(const Ray3D &r, Point3D* p) {
-    return false;
-}
-
-Vector3D PhysicalObject::normal(const Point3D &p) {
-    return Vector3D();
-}
-

@@ -10,7 +10,7 @@
 #define __Charles__Light__
 
 #include <iostream>
-#include "Point3D.h"
+#include "Vector3D.h"
 
 class Light {
 public:
