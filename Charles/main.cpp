@@ -25,12 +25,14 @@ int main(int argc, const char * argv[])
     }
     }
 
-    objects.push_back(new Sphere(0, -1000000, 0, 999900));
+//    objects.push_back(new Sphere(0, -1000000, 0, 999900));
 //    objects.push_back(new Sphere(0, -200, 100, 80));
+//    objects.push_back(new Sphere(0, 0, 300, 40));
+//    objects.push_back(new Sphere(-280, 0, 300, 40));
     
     // Light 'em up.
-    lights.push_back(Light(0, 300, 300, 120));
-//    lights.push_back(Light(0, 240, 100, 900));
+//    lights.push_back(Light(0, 300, 300, 120));
+    lights.push_back(Light(-150, 0, 0, 200));
     
     // Create window
     sf::RenderWindow window(sf::VideoMode(w, h), "Charles");
@@ -118,8 +120,6 @@ int main(int argc, const char * argv[])
                 currentState = state::notifying;
             }
             
-            //  std::cout << totalRenderedPoints << "/" << totalPixels << " " << totalPixels-totalRenderedPoints << "\n";
-            
             // Clear screen.
             window.clear(sf::Color::Black);
             
@@ -157,25 +157,14 @@ void render()
         // Y' should be Z' cross X'.
         // Thanks Morgan and Thomas Redding!
         Vector3D cZPrime = eye.uv;
-        Vector3D cXPrime = Vector3D(0, 1, 0).cross(cZPrime); // TODO ??
+        Vector3D cXPrime = Vector3D(cZPrime.z, 0, -cZPrime.x);
         Vector3D cYPrime = cZPrime.cross(cXPrime);
         
-        Ray3D cPrime = Ray3D(eye.traverse(screenDistance).p,
-                             cZPrime + cXPrime + cYPrime);
+        Vector3D p = (cXPrime * offset.x) +
+                     (cYPrime * offset.y) +
+                     (cZPrime * offset.z);
         
-        // Combine offset and coordinate system.
-        Vector3D cPrimeOffset = Vector3D(cPrime.uv.x * offset.x,
-                                         cPrime.uv.y * offset.y,
-                                         cPrime.uv.z * offset.z);
-
-        Point3D p = cPrime.p + cPrimeOffset;
-        Vector3D uv = (p - eye.p).unitize();
-        
-        // Parallel projection!
-        // Vector3D uv = Vector3D(0,0,-1);
-        
-        // Start from near plane.
-        // Ray3D r = Ray3D(p, uv);
+        Vector3D uv = eye.traverse(screenDistance).p + p;
         
         // Start from eye
         Ray3D r = Ray3D(eye.p, uv);
@@ -275,9 +264,17 @@ Color cast(const Ray3D &_r, int _bounces)
             return Color{b,b,b,255};
         }
         
+        // Send out a reflection ray
+        // if (_bounces < 0) {
+        //    return cast(Ray3D(collision, normal), _bounces + 1);
+        // }
+        
+        // Send out a refraction ray
+        // cast(contactpt, _uv * diff, _bounces + 1);
+        
         // Send out a light ray
-        Vector3D light = collision - lights[0].center;
-        double cross = light * normal;
+        // Using Lambertian reflectance.
+        Vector3D light = lights[0].center - collision;
         
         if (debug == mode::lightz) {
             unsigned char b = 126-126 * light.unitize().z;
@@ -285,26 +282,10 @@ Color cast(const Ray3D &_r, int _bounces)
             return Color{b,b,b,255};
         }
         
-        // Send out a reflection ray
-        // if (_bounces < 0) {
-        //    return cast(Ray3D(collision, normal), _bounces + 1);
-        // }
-        // Send out a refraction ray
-        // cast(contactpt, _uv * diff, _bounces + 1);
+        double lambertian = (normal * light) / pow((light).magnitude(), 2);
         
-        // Color!
-        double rangeness = 1 / sqrt(light.magnitude()) * lights[0].intensity;
-        
-        if (rangeness <= 0) {
-            unsigned char g = (unsigned char) (debug == mode::light) ? 255 : 0;
-            return Color{0, g, 0, 255};
-        }
-        
-        double fluxness = - cross / (light.magnitude() * normal.magnitude());
-        
-        if (fluxness <= 0) {
-            unsigned char r = (unsigned char) (debug == mode::light) ? 255 : 0;
-            return Color{r, 0, 0, 255};
+        if (lambertian < 0) {
+            lambertian = 0;
         }
         
         // Send out a shadow ray
@@ -318,6 +299,10 @@ Color cast(const Ray3D &_r, int _bounces)
             }
             
             if (_pblocker->collides(Ray3D(collision, lights[0].center - collision), &contacts)) {
+                if ((contacts - collision).magnitude() > (lights[0].center - collision).magnitude()) {
+                    continue;
+                }
+                
                 if (debug == mode::shadows) {
                     return Color{255,0,0,255};
                 }
@@ -328,9 +313,7 @@ Color cast(const Ray3D &_r, int _bounces)
             checks++;
         }
         
-        // TODO this ain't how light works.
-//        double b = 255 * 1 * fluxness * shadow;
-        double b = 255 * shadow * lights[0].intensity * (normal * (lights[0].center - collision)) / pow((lights[0].center - collision).magnitude(), 2);
+        double b = 255 * shadow * lights[0].intensity * lambertian;
         
         if ( b > 255) {
             b = 255;

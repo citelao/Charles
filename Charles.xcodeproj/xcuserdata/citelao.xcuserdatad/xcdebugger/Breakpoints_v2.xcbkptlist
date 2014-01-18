@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Charles/main.cpp"
-            timestampString = "411601449.64668"
+            timestampString = "411770580.70044"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "246"
-            endingLineNumber = "246"
+            startingLineNumber = "235"
+            endingLineNumber = "235"
             landmarkName = "cast(const Ray3D &amp;_r, int _bounces)"
             landmarkType = "7">
          </BreakpointContent>
@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Charles/main.cpp"
-            timestampString = "411601449.64668"
+            timestampString = "411770580.70044"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "237"
-            endingLineNumber = "237"
+            startingLineNumber = "226"
+            endingLineNumber = "226"
             landmarkName = "cast(const Ray3D &amp;_r, int _bounces)"
             landmarkType = "7">
          </BreakpointContent>
@@ -74,11 +74,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Charles/main.cpp"
-            timestampString = "411601449.64668"
+            timestampString = "411770580.70044"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "242"
-            endingLineNumber = "242"
+            startingLineNumber = "231"
+            endingLineNumber = "231"
             landmarkName = "cast(const Ray3D &amp;_r, int _bounces)"
             landmarkType = "7">
          </BreakpointContent>
@@ -86,15 +86,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Charles/main.cpp"
-            timestampString = "411601449.64668"
+            timestampString = "411770580.70044"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "188"
-            endingLineNumber = "188"
+            startingLineNumber = "177"
+            endingLineNumber = "177"
             landmarkName = "render()"
             landmarkType = "7">
          </BreakpointContent>
@@ -168,11 +168,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Charles/main.cpp"
-            timestampString = "411601936.456078"
+            timestampString = "411770580.70044"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "323"
-            endingLineNumber = "323"
+            startingLineNumber = "308"
+            endingLineNumber = "308"
             landmarkName = "cast(const Ray3D &amp;_r, int _bounces)"
             landmarkType = "7">
          </BreakpointContent>
@@ -184,11 +184,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Charles/main.cpp"
-            timestampString = "411602983.904716"
+            timestampString = "411770580.70044"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "335"
-            endingLineNumber = "335"
+            startingLineNumber = "318"
+            endingLineNumber = "318"
             landmarkName = "cast(const Ray3D &amp;_r, int _bounces)"
             landmarkType = "7">
          </BreakpointContent>
@@ -200,11 +200,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Charles/main.cpp"
-            timestampString = "411602990.238772"
+            timestampString = "411770580.70044"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "334"
-            endingLineNumber = "334"
+            startingLineNumber = "317"
+            endingLineNumber = "317"
             landmarkName = "cast(const Ray3D &amp;_r, int _bounces)"
             landmarkType = "7">
          </BreakpointContent>

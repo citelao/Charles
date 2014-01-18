@@ -85,7 +85,7 @@ int totalRenderedPoints = 0;
 bool* renderedPoints = new bool[totalPixels];
 
 // Camera configuration
-Ray3D eye(0, 0, 0, 0, 0, 1);
+Ray3D eye(Point3D(0, 0, 0), Vector3D(0, 1, 1).unitize());
 double pixelsPerMeter = 120;
 double fov = 85;
 
