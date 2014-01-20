@@ -21,6 +21,8 @@ class Vector3D {
     Vector3D(double x = 0, double y = 0, double z = 0)
     :x(x), y(y), z(z) {};
     
+    // TODO implement a null vector
+    
     // Arithemetic
     Vector3D operator+(const Vector3D &nv) const;
     Vector3D operator-(const Vector3D &nv) const;

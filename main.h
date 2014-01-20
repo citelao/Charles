@@ -21,6 +21,7 @@
 #include "Ray3D.h"
 #include "Vector3D.h"
 #include "Sphere.h"
+#include "RectPrism.h"
 #include "Light.h"
 
 /**
@@ -85,7 +86,7 @@ int totalRenderedPoints = 0;
 bool* renderedPoints = new bool[totalPixels];
 
 // Camera configuration
-Ray3D eye(Point3D(0, 0, -100), Vector3D(0, 0, 1).unitize());
+Ray3D eye(Point3D(0, 0, 0), Vector3D(0, 0, 1).unitize());
 double pixelsPerMeter = 10;
 double fov = 85;
 

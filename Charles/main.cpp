@@ -16,23 +16,25 @@ int main(int argc, const char * argv[])
     std::cout << "Go, Charles!\n";
     
     // Make spheres. Lots of spheres.
-    double _r = 40;
-    for (double _zp = 200; _zp < 600; _zp += 100) {
-    for (double _xp = -200; _xp <= 200; _xp += 100) {
-    for (double _yp = -200; _yp <= 200; _yp += 100) {
-        objects.push_back(new Sphere(_xp, _yp, _zp, _r));
-    }
-    }
-    }
+//    double _r = 40;
+//    for (double _zp = 200; _zp < 600; _zp += 100) {
+//    for (double _xp = -200; _xp <= 200; _xp += 100) {
+//    for (double _yp = -200; _yp <= 200; _yp += 100) {
+//        objects.push_back(new Sphere(_xp, _yp, _zp, _r));
+//    }
+//    }
+//    }
 
 //    objects.push_back(new Sphere(0, -1000000, 0, 999900));
 //    objects.push_back(new Sphere(0, -200, 100, 80));
 //    objects.push_back(new Sphere(0, 0, 300, 40));
 //    objects.push_back(new Sphere(-280, 0, 300, 40));
     
+    objects.push_back(new RectPrism(-300, -20, 0, 9001, 10, 9001));
+
     // Light 'em up.
 //    lights.push_back(Light(0, 300, 300, 120));
-    lights.push_back(Light(-150, 0, 0, 200));
+    lights.push_back(Light(0, 0, 100, 100));
     
     // Create window
     sf::RenderWindow window(sf::VideoMode(w, h), "Charles");
@@ -107,7 +109,7 @@ int main(int argc, const char * argv[])
         else if (currentState == state::rendering) // Update screen if rendering
         {
             // If we're done rendering everything, stop the rendering. Pretty self explanatory.
-            // This code is O(n) and dumb.
+            // This code is dumb and compensates for a poorly written counter.
             bool done = true;
             for (int i = 0; i < totalPixels; i++) {
                 if (!renderedPoints[i]) {

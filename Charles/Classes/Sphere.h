@@ -15,13 +15,15 @@
 
 class Sphere : public PhysicalObject {
 public:
-    Point3D center;
-    double radius;
     bool collides(const Ray3D &r, Point3D* p);
     Vector3D normal(const Point3D &p);
     
     Sphere(Point3D _c = 0, double _r = 0): center(_c), radius(_r) {};
     Sphere(double _x, double _y, double _z, double _r = 0): center(_x, _y, _z), radius(_r) {};
+    
+private:
+    Point3D center;
+    double radius;
 };
 
 #endif /* defined(__Charles__Sphere__) */
