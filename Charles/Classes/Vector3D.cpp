@@ -52,3 +52,8 @@ Vector3D Vector3D::unitize(void) const
 {
     return *this / this->magnitude(); // todo idfk
 }
+
+Vector3D Vector3D::reflect(const Vector3D &normal) const
+{
+    return *this + normal * 2;
+}

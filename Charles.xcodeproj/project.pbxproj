@@ -15,6 +15,7 @@
 		7E95D57A1818BC0E002B9D85 /* SFML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E95D5761818BC0E002B9D85 /* SFML.framework */; };
 		7E98E007185126EF00FE6A85 /* Ray3D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E98E005185126EF00FE6A85 /* Ray3D.cpp */; };
 		7E98E00A18512B0800FE6A85 /* PhysicalObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E98E00918512B0800FE6A85 /* PhysicalObject.cpp */; };
+		7EB494D7188CCA81008CF253 /* Color.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EB494D5188CCA81008CF253 /* Color.cpp */; };
 		7ED3A511182468E700EABE3B /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ED3A510182468E700EABE3B /* main.cpp */; };
 		7ED3A513182468E700EABE3B /* Test.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7ED3A512182468E700EABE3B /* Test.1 */; };
 		7ED3A51B182469AC00EABE3B /* Light.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ED3A517182469AC00EABE3B /* Light.cpp */; };
@@ -59,6 +60,8 @@
 		7E98E005185126EF00FE6A85 /* Ray3D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Ray3D.cpp; sourceTree = "<group>"; };
 		7E98E006185126EF00FE6A85 /* Ray3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ray3D.h; sourceTree = "<group>"; };
 		7E98E00918512B0800FE6A85 /* PhysicalObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PhysicalObject.cpp; sourceTree = "<group>"; };
+		7EB494D5188CCA81008CF253 /* Color.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Color.cpp; sourceTree = "<group>"; };
+		7EB494D6188CCA81008CF253 /* Color.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Color.h; sourceTree = "<group>"; };
 		7ED3A50E182468E700EABE3B /* Test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Test; sourceTree = BUILT_PRODUCTS_DIR; };
 		7ED3A510182468E700EABE3B /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		7ED3A512182468E700EABE3B /* Test.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = Test.1; sourceTree = "<group>"; };
@@ -104,6 +107,8 @@
 		7E17B6741818DC190080FB2A /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				7EB494D5188CCA81008CF253 /* Color.cpp */,
+				7EB494D6188CCA81008CF253 /* Color.h */,
 				7ED3A517182469AC00EABE3B /* Light.cpp */,
 				7ED3A518182469AC00EABE3B /* Light.h */,
 				7EEB7D63188B207C0047C2F0 /* Physical Objects */,
@@ -240,6 +245,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7E98E00A18512B0800FE6A85 /* PhysicalObject.cpp in Sources */,
+				7EB494D7188CCA81008CF253 /* Color.cpp in Sources */,
 				7E17B6721818DC090080FB2A /* main.cpp in Sources */,
 				7ED3A51B182469AC00EABE3B /* Light.cpp in Sources */,
 				7ED3A51C182469AC00EABE3B /* Sphere.cpp in Sources */,

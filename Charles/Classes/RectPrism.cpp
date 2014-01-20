@@ -8,20 +8,22 @@
 
 #include "RectPrism.h"
 
-RectPrism::RectPrism(double x, double y, double z, double width, double height, double depth) {
-    init(Point3D(x, y, z), Vector3D(width, height, depth));
+RectPrism::RectPrism(double x, double y, double z, double width, double height, double depth, double reflectivity) {
+    init(Point3D(x, y, z), Vector3D(width, height, depth), reflectivity);
 }
 
-RectPrism::RectPrism(Point3D corner, Vector3D dimensions) {
-    init(corner, dimensions);
+RectPrism::RectPrism(Point3D corner, Vector3D dimensions, double reflectivity) {
+    init(corner, dimensions, reflectivity);
 }
 
-void RectPrism::init(Point3D corner, Vector3D dimensions) {
+void RectPrism::init(Point3D corner, Vector3D dimensions, double reflectivity) {
     if (dimensions.x <= 0 ||
         dimensions.y <= 0 ||
         dimensions.z <= 0) {
         throw std::invalid_argument("Rectangular prisms cannot have negative dimensions.");
     }
+    
+    _reflectivity = reflectivity;
     
     _mincorner = corner;
     _dimensions = dimensions;
@@ -42,7 +44,7 @@ bool RectPrism::collides(const Ray3D &r, Point3D* p) {
     
     if (_mincorner.x <= i.x && i.x <= _maxcorner.x &&
         _mincorner.y <= i.y && i.y <= _maxcorner.y &&
-        t < lowT) {
+        t < lowT && t > 0) {
         lowI = i;
         lowT = t;
     }
@@ -53,7 +55,7 @@ bool RectPrism::collides(const Ray3D &r, Point3D* p) {
     
     if (_mincorner.x <= i.x && i.x <= _maxcorner.x &&
         _mincorner.y <= i.y && i.y <= _maxcorner.y &&
-        t < lowT) {
+        t < lowT && t > 0) {
         lowI = i;
         lowT = t;
     }
@@ -64,7 +66,7 @@ bool RectPrism::collides(const Ray3D &r, Point3D* p) {
     
     if (_mincorner.x <= i.x && i.x <= _maxcorner.x &&
         _mincorner.z <= i.z && i.z <= _maxcorner.z &&
-        t < lowT) {
+        t < lowT && t > 0) {
         lowI = i;
         lowT = t;
     }
@@ -75,7 +77,7 @@ bool RectPrism::collides(const Ray3D &r, Point3D* p) {
     
     if (_mincorner.x <= i.x && i.x <= _maxcorner.x &&
         _mincorner.z <= i.z && i.z <= _maxcorner.z &&
-        t < lowT) {
+        t < lowT && t > 0) {
         lowI = i;
         lowT = t;
     }
@@ -86,7 +88,7 @@ bool RectPrism::collides(const Ray3D &r, Point3D* p) {
     
     if (_mincorner.y <= i.y && i.y <= _maxcorner.y &&
         _mincorner.z <= i.z && i.z <= _maxcorner.z &&
-        t < lowT) {
+        t < lowT && t > 0) {
         lowI = i;
         lowT = t;
     }
@@ -97,7 +99,7 @@ bool RectPrism::collides(const Ray3D &r, Point3D* p) {
     
     if (_mincorner.y <= i.y && i.y <= _maxcorner.y &&
         _mincorner.z <= i.z && i.z <= _maxcorner.z &&
-        t < lowT) {
+        t < lowT && t > 0) {
         lowI = i;
         lowT = t;
     }
@@ -142,4 +144,12 @@ Vector3D RectPrism::normal(const Point3D &p) {
     }
     
     return Vector3D(0, 0, 1);
+}
+
+double RectPrism::reflectivity(const Point3D &p) {
+    return _reflectivity;
+}
+
+Color RectPrism::color(const Point3D &p) {
+    return _color;
 }

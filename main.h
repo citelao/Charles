@@ -18,21 +18,12 @@
 #include <math.h>
 #include <SFML/graphics.hpp>
 #include <vector>
+#include "Color.h"
 #include "Ray3D.h"
 #include "Vector3D.h"
 #include "Sphere.h"
 #include "RectPrism.h"
 #include "Light.h"
-
-/**
- * The ever-useful color struct
- **/
-struct Color {
-    unsigned char r;
-    unsigned char g;
-    unsigned char b;
-    unsigned char a;
-};
 
 /**
  * Point & Vector classes
@@ -55,7 +46,6 @@ enum mode {
     normalz,     // should display normal z value
     lightz,      // should display light ray z value
     unrendered,  // shows unrendered pixels as purple.
-    light        // not too terribly meaningful
 };
 
 enum state {
@@ -71,11 +61,16 @@ enum state {
 // Debug mode
 mode debug = mode::none;
 
+// Math globals that really should be somewhere else (TODO)
+double tolerance = 0.00000001;
+
 // Renderer settings
 int w = 512;
 int h = 512;
 int totalPixels = w * h;
 unsigned char* renderImage = new unsigned char[totalPixels * 4];
+
+int maxBounces = 4;
 
 // Renderer statistics
 int collided = 0;
@@ -86,7 +81,7 @@ int totalRenderedPoints = 0;
 bool* renderedPoints = new bool[totalPixels];
 
 // Camera configuration
-Ray3D eye(Point3D(0, 0, 0), Vector3D(0, 0, 1).unitize());
+Ray3D eye(Point3D(100, 0, 100), Vector3D(-1, 0, 1).unitize());
 double pixelsPerMeter = 10;
 double fov = 85;
 

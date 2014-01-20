@@ -16,25 +16,28 @@ int main(int argc, const char * argv[])
     std::cout << "Go, Charles!\n";
     
     // Make spheres. Lots of spheres.
-//    double _r = 40;
-//    for (double _zp = 200; _zp < 600; _zp += 100) {
-//    for (double _xp = -200; _xp <= 200; _xp += 100) {
-//    for (double _yp = -200; _yp <= 200; _yp += 100) {
-//        objects.push_back(new Sphere(_xp, _yp, _zp, _r));
-//    }
-//    }
-//    }
+    double _r = 40;
+    for (double _zp = -240; _zp < 600; _zp += 100) {
+    for (double _xp = -200; _xp <= 200; _xp += 100) {
+    for (double _yp = -10; _yp <= 200; _yp += 100) {
+        objects.push_back(new Sphere(_xp, _yp, _zp, _r, 0.9));
+    }
+    }
+    }
 
 //    objects.push_back(new Sphere(0, -1000000, 0, 999900));
 //    objects.push_back(new Sphere(0, -200, 100, 80));
 //    objects.push_back(new Sphere(0, 0, 300, 40));
 //    objects.push_back(new Sphere(-280, 0, 300, 40));
-    
-    objects.push_back(new RectPrism(-300, -20, 0, 9001, 10, 9001));
+//    
+//    objects.push_back(new Sphere(-50, 30, 0, 40, 0.2));
+//    objects.push_back(new RectPrism(-60, -20, 150, 60, 60, 60, 0.9));
+//
+    objects.push_back(new RectPrism(-300, -20, -300, 9001, 10, 9001, 0.2));
 
     // Light 'em up.
 //    lights.push_back(Light(0, 300, 300, 120));
-    lights.push_back(Light(0, 0, 100, 100));
+    lights.push_back(Light(100, 100, 100, 200));
     
     // Create window
     sf::RenderWindow window(sf::VideoMode(w, h), "Charles");
@@ -178,7 +181,7 @@ void render()
         if (debug == mode::onscreen && ((screenPoint.x == 0 && screenPoint.y == 0) ||
             (screenPoint.x == 256 && screenPoint.y == 256) ||
             (screenPoint.x == 511 && screenPoint.y == 511))) {
-            c = Color{255,255,255,255};
+            c = Color(255, 255, 255);
         }
         
         // Write the RGBA codes to the unsigned char array.
@@ -251,43 +254,51 @@ Color cast(const Ray3D &_r, int _bounces)
         collided++;
         
         if (debug == mode::onscreen) {
-            return Color{255, 255, 255, 255};
+            return Color(255, 255, 255);
         }
         
         Vector3D normal = closest->normal(collision);
         
         if (debug == mode::normal) {
-            return Color{(unsigned char)(126 + 126 * normal.x), (unsigned char)(126 + 126 * normal.y), (unsigned char)(126 + 126 * normal.z), 255};
+            return Color(126 + 126 * normal.x, 126 + 126 * normal.y, 126 + 126 * normal.z);
         }
         
         if (debug == mode::normalz) {
             unsigned char b = 126-126 * normal.z;
             
-            return Color{b,b,b,255};
+            return Color(b,b,b);
         }
         
         // Send out a reflection ray
-        // if (_bounces < 0) {
-        //    return cast(Ray3D(collision, normal), _bounces + 1);
-        // }
+        Color reflection = Color(0, 0, 0);
+        if (closest->reflectivity(collision) >= 0 + tolerance) {
+            if (_bounces < maxBounces) {
+                reflection = cast(Ray3D(collision, _r.uv.reflect(normal)), _bounces + 1);
+            } else {
+                reflection = Color(0, 0, 0);
+            }
+        }
         
         // Send out a refraction ray
         // cast(contactpt, _uv * diff, _bounces + 1);
         
         // Send out a light ray
         // Using Lambertian reflectance.
-        Vector3D light = lights[0].center - collision;
-        
-        if (debug == mode::lightz) {
-            unsigned char b = 126-126 * light.unitize().z;
+        double lambertian = 0;
+        if (closest->reflectivity(collision) <= 1 - tolerance) {
+            Vector3D light = lights[0].center - collision;
             
-            return Color{b,b,b,255};
-        }
-        
-        double lambertian = (normal * light) / pow((light).magnitude(), 2);
-        
-        if (lambertian < 0) {
-            lambertian = 0;
+            if (debug == mode::lightz) {
+                unsigned char b = 126-126 * light.unitize().z;
+                
+                return Color(b,b,b);
+            }
+            
+            lambertian = (normal * light) / pow((light).magnitude(), 2);
+            
+            if (lambertian < 0) {
+                lambertian = 0;
+            }
         }
         
         // Send out a shadow ray
@@ -306,7 +317,7 @@ Color cast(const Ray3D &_r, int _bounces)
                 }
                 
                 if (debug == mode::shadows) {
-                    return Color{255,0,0,255};
+                    return Color(255,0,0);
                 }
                 
                 shadow = 0;
@@ -315,14 +326,22 @@ Color cast(const Ray3D &_r, int _bounces)
             checks++;
         }
         
-        double b = 255 * shadow * lights[0].intensity * lambertian;
+        double brightness = shadow * lights[0].intensity * lambertian;
         
-        if ( b > 255) {
-            b = 255;
+        if ( brightness > 1) {
+            brightness = 1;
         }
         
-        return Color{(unsigned char) b, (unsigned char) (b * 130 / 255), (unsigned char) b, 255};
+        // Combine reflection and lambertian
+        double reflectivity = closest->reflectivity(collision);
+        Color localColor = closest->color(collision);
+        
+        int r = reflection.r * reflectivity + brightness * localColor.r * (1 - reflectivity);
+        int g = reflection.g * reflectivity + brightness * localColor.g * (1 - reflectivity);
+        int b = reflection.b * reflectivity + brightness * localColor.b * (1 - reflectivity);
+        
+        return Color(r, g, b);
     }
     
-    return Color{0, 0, 0, 255};
+    return Color(0, 0, 0);
 }

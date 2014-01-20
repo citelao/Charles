@@ -36,6 +36,8 @@ class Vector3D {
     
     double magnitude(void) const;
     Vector3D unitize(void) const;
+    
+    Vector3D reflect(const Vector3D &nv) const;
 };
 
 // Vectors and Points are interchangeable mathwise, but I like keeping variables with different names.
