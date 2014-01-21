@@ -16,6 +16,7 @@
 #include <string>
 #include <thread>
 #include <math.h>
+#include <ctime>
 #include <SFML/graphics.hpp>
 #include <vector>
 #include "Color.h"
@@ -70,9 +71,11 @@ int h = 512;
 int totalPixels = w * h;
 unsigned char* renderImage = new unsigned char[totalPixels * 4];
 
-int maxBounces = 4;
+int maxBounces = 5;
 
 // Renderer statistics
+time_t start;
+time_t end;
 int collided = 0;
 int checks = 0;
 

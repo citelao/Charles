@@ -15,6 +15,8 @@ int main(int argc, const char * argv[])
 {
     std::cout << "Go, Charles!\n";
     
+    start = time(NULL);
+    
     // Make spheres. Lots of spheres.
     double _r = 40;
     for (double _zp = -240; _zp < 600; _zp += 100) {
@@ -33,7 +35,7 @@ int main(int argc, const char * argv[])
 //    objects.push_back(new Sphere(-50, 30, 0, 40, 0.2));
 //    objects.push_back(new RectPrism(-60, -20, 150, 60, 60, 60, 0.9));
 //
-    objects.push_back(new RectPrism(-300, -20, -300, 9001, 10, 9001, 0.2));
+    objects.push_back(new RectPrism(-300, -20, -900, 9001, 10, 9001, 0.2));
 
     // Light 'em up.
 //    lights.push_back(Light(0, 300, 300, 120));
@@ -102,7 +104,12 @@ int main(int argc, const char * argv[])
         // Determine correct action based on state
         if (currentState == state::notifying) // Print out statistics once if done rendering
         {
+            end = time(NULL);
+            
+            double secs = (double)(end - start);
+            
             std::cout << "Done Rendering \n";
+            std::cout << "Render time: " << secs << " seconds \n";
             std::cout << "Total Points Rendered: " << totalRenderedPoints << "/" << totalPixels << "\n";
             std::cout << "Collided rays: " << collided << "\n";
             std::cout << "Shadow checks: " << checks << "\n";
