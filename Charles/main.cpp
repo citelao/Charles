@@ -18,28 +18,29 @@ int main(int argc, const char * argv[])
     start = time(NULL);
     
     // Make spheres. Lots of spheres.
-    double _r = 40;
-    for (double _zp = -240; _zp < 600; _zp += 100) {
-    for (double _xp = -200; _xp <= 200; _xp += 100) {
-    for (double _yp = -10; _yp <= 200; _yp += 100) {
-        objects.push_back(new Sphere(_xp, _yp, _zp, _r, 0.9));
-    }
-    }
-    }
-
-//    objects.push_back(new Sphere(0, -1000000, 0, 999900));
-//    objects.push_back(new Sphere(0, -200, 100, 80));
-//    objects.push_back(new Sphere(0, 0, 300, 40));
-//    objects.push_back(new Sphere(-280, 0, 300, 40));
-//    
-//    objects.push_back(new Sphere(-50, 30, 0, 40, 0.2));
-//    objects.push_back(new RectPrism(-60, -20, 150, 60, 60, 60, 0.9));
-//
-    objects.push_back(new RectPrism(-300, -20, -900, 9001, 10, 9001, 0.2));
+//    double _r = 40;
+//    for (double _zp = -200; _zp < 600; _zp += 100) {
+//    for (double _xp = -200; _xp <= 200; _xp += 100) {
+//    for (double _yp = -10; _yp <= 200; _yp += 100) {
+//        objects.push_back(new Sphere(_xp, _yp, _zp, _r, 0));
+//    }
+//    }
+//    }
+    
+    objects.push_back(new RectPrism(-700, -20, -900, 9001, 10, 9001, 0.1));
+    
+    objects.push_back(new Sphere(-100, 30, 300, 40, 0.9));
+    objects.push_back(new Sphere(-180, 30, 270, 40, 0.9));
+    objects.push_back(new Sphere(-80, 30, 200, 40, 0));
+    
+//    objects.push_back(new RectPrism(50, -10, 150, 10, 200, 300, 0.9));
 
     // Light 'em up.
 //    lights.push_back(Light(0, 300, 300, 120));
-    lights.push_back(Light(100, 100, 100, 200));
+//    lights.push_back(Light(300, 0, 300, 200));
+    lights.push_back(Light(100, 100, 300, 80));
+    lights.push_back(Light(-100, 100, 350, 80));
+    lights.push_back(Light(-200, 100, 50, 80));
     
     // Create window
     sf::RenderWindow window(sf::VideoMode(w, h), "Charles");
@@ -181,13 +182,12 @@ void render()
         // Start from eye
         Ray3D r = Ray3D(eye.p, uv);
         
-        
         // Cast a ray from the screen point in the newly calculated direction.
         Color c = cast(r);
         
         if (debug == mode::onscreen && ((screenPoint.x == 0 && screenPoint.y == 0) ||
-            (screenPoint.x == 256 && screenPoint.y == 256) ||
-            (screenPoint.x == 511 && screenPoint.y == 511))) {
+            (screenPoint.x == w/2 && screenPoint.y == h/2) ||
+            (screenPoint.x == w-1 && screenPoint.y == h-1))) {
             c = Color(255, 255, 255);
         }
         
@@ -226,29 +226,28 @@ Point2D getNextPoint()
     int y = position / w;
     int x = position - y * w;
     
-    return Point2D{x, y};
+    return Point2D(x, y);
 }
 
 /**
- * Cast a ray. Not yet recursive!
+ * Cast a ray. Recursive!
  **/
 Color cast(const Ray3D &_r, int _bounces)
 {
     // Find the closest object.
     PhysicalObject* closest = NULL;
     Point3D collision;
-    double closestDistance;
-    for (int i = 0; i < objects.size(); i++) {
+    double closestDistance = INFINITY;
+    for (int i = 0; i < objects.size(); i++) { // θ(n)
         PhysicalObject* _object = objects[i];
         
         Point3D _collision;
         bool collides = _object->collides(_r, &_collision);
         
-        // TODO *extremely* inefficient
         if (collides) { // Ray collides with object.
-            double distance = (_r.p - _collision).magnitude();
+            double distance = (_r.p - _collision).squaredmagnitude();
             
-            if (distance < closestDistance || closest == NULL) {
+            if (distance < closestDistance) {
                 closestDistance = distance;
                 collision = _collision;
                 closest = _object;
@@ -277,77 +276,79 @@ Color cast(const Ray3D &_r, int _bounces)
         }
         
         // Send out a reflection ray
+        double reflectivity = closest->reflectivity(collision);
+        
         Color reflection = Color(0, 0, 0);
-        if (closest->reflectivity(collision) >= 0 + tolerance) {
+        if (reflectivity >= 0 + tolerance) {
             if (_bounces < maxBounces) {
                 reflection = cast(Ray3D(collision, _r.uv.reflect(normal)), _bounces + 1);
-            } else {
-                reflection = Color(0, 0, 0);
             }
         }
         
         // Send out a refraction ray
         // cast(contactpt, _uv * diff, _bounces + 1);
         
-        // Send out a light ray
-        // Using Lambertian reflectance.
-        double lambertian = 0;
-        if (closest->reflectivity(collision) <= 1 - tolerance) {
-            Vector3D light = lights[0].center - collision;
-            
-            if (debug == mode::lightz) {
-                unsigned char b = 126-126 * light.unitize().z;
-                
-                return Color(b,b,b);
-            }
-            
-            lambertian = (normal * light) / pow((light).magnitude(), 2);
-            
-            if (lambertian < 0) {
-                lambertian = 0;
-            }
-        }
+        // Send out light rays to each light.
+        // Using Lambertian reflectance for now.
+        Color localColor = closest->color(collision);
+        double brightness = 0;
         
-        // Send out a shadow ray
-        double shadow = 1;
-        for (int j = 0; j < objects.size(); j++) {
-            PhysicalObject* _pblocker = objects[j];
-            Point3D contacts;
-            
-            if (_pblocker == closest) {
-                continue;
-            }
-            
-            if (_pblocker->collides(Ray3D(collision, lights[0].center - collision), &contacts)) {
-                if ((contacts - collision).magnitude() > (lights[0].center - collision).magnitude()) {
+        if (reflectivity <= 1 - tolerance) {
+            for (int i = 0; i < lights.size(); i++) {
+                Vector3D light = lights[i].center - collision;
+                
+                if (debug == mode::lightz) {
+                    unsigned char b = 126-126 * light.unitize().z;
+                    
+                    return Color(b,b,b);
+                }
+                
+                // Make sure this light is not obscured.
+                double shadow = 1;
+                for (int j = 0; j < objects.size(); j++) {
+                    PhysicalObject* _pblocker = objects[j];
+                    Point3D contacts;
+                    
+                    if (_pblocker == closest) {
+                        continue;
+                    }
+                    
+                    if (_pblocker->collides(Ray3D(collision, light), &contacts)) {
+                        if ((contacts - collision).magnitude() > (light).magnitude()) { // If object is *behind* light.
+                            continue;
+                        }
+                        
+                        if (debug == mode::shadows) {
+                            return Color(255,0,0);
+                        }
+                        
+                        shadow = 0;
+                        break;
+                    }
+                }
+                
+                if (shadow == 0) {
                     continue;
                 }
                 
-                if (debug == mode::shadows) {
-                    return Color(255,0,0);
+                double lambertian = (normal * light) / pow((light).magnitude(), 2);
+                
+                if (lambertian < 0) {
+                    lambertian = 0;
                 }
                 
-                shadow = 0;
+                brightness += lights[i].intensity * lambertian;
+                
+                if ( brightness >= 1) {
+                    brightness = 1;
+                    break;
+                }
             }
-            
-            checks++;
         }
         
-        double brightness = shadow * lights[0].intensity * lambertian;
+        Color lambertian = localColor * brightness;
         
-        if ( brightness > 1) {
-            brightness = 1;
-        }
-        
-        // Combine reflection and lambertian
-        double reflectivity = closest->reflectivity(collision);
-        Color localColor = closest->color(collision);
-        
-        int r = reflection.r * reflectivity + brightness * localColor.r * (1 - reflectivity);
-        int g = reflection.g * reflectivity + brightness * localColor.g * (1 - reflectivity);
-        int b = reflection.b * reflectivity + brightness * localColor.b * (1 - reflectivity);
-        
-        return Color(r, g, b);
+        return reflection * reflectivity + lambertian * (1-reflectivity);
     }
     
     return Color(0, 0, 0);

@@ -43,9 +43,14 @@ Vector3D Vector3D::cross(const Vector3D &nv) const
                     x * nv.y - y * nv.x);
 }
 
+double Vector3D::squaredmagnitude(void) const
+{
+    return pow(x, 2) + pow(y, 2) + pow(z, 2);
+}
+
 double Vector3D::magnitude(void) const
 {
-    return sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2));
+    return sqrt(this->squaredmagnitude());
 }
 
 Vector3D Vector3D::unitize(void) const

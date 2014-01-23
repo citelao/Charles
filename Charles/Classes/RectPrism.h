@@ -23,11 +23,11 @@ public:
     RectPrism(double x, double y, double z, double width, double height, double depth, double reflectivity = 0);
     RectPrism(Point3D corner, Vector3D dimensions, double reflectivity = 0);
     
-private:
+protected:
     double tolerance = 0.00000001;
     
     double _reflectivity;
-    Color _color = Color(255, 0, 0);
+    Color _color = Color(50, 0, 180);
     
     Vector3D _dimensions;
     Point3D _mincorner;
