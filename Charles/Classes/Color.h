@@ -25,7 +25,19 @@ public:
     Color(int _r, int _g, int _b);
     Color(double _r, double _g, double _b);
     
+    Color(int _c);
+    Color(double _c);
+    
     // TODO global colors (white, black, etc)
+    
+    // Operators
+    Color operator+(const Color &c) const;
+    Color operator+(const int &c) const;
+    Color operator+(const double &c) const;
+
+    Color operator*(const Color &c) const;
+    Color operator*(const int &c) const;
+    Color operator*(const double &c) const;
 };
 
 #endif /* defined(__Charles__Color__) */

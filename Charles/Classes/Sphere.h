@@ -23,7 +23,7 @@ public:
     Sphere(Point3D _c = 0, double _r = 0, double _ref = 0): center(_c), radius(_r), _reflectivity(_ref) {};
     Sphere(double _x, double _y, double _z, double _r = 0, double _ref = 0): center(_x, _y, _z), radius(_r), _reflectivity(_ref) {};
     
-private:
+protected:
     Point3D center;
     double radius;
     double _reflectivity;

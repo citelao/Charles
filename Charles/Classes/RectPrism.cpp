@@ -143,7 +143,7 @@ Vector3D RectPrism::normal(const Point3D &p) {
         return Vector3D(-1, 0, 0);
     }
     
-    return Vector3D(0, 0, 1);
+    return Vector3D(0, 0, 0);
 }
 
 double RectPrism::reflectivity(const Point3D &p) {

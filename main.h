@@ -20,19 +20,12 @@
 #include <SFML/graphics.hpp>
 #include <vector>
 #include "Color.h"
+#include "Point2D.h"
 #include "Ray3D.h"
 #include "Vector3D.h"
 #include "Sphere.h"
 #include "RectPrism.h"
 #include "Light.h"
-
-/**
- * Point & Vector classes
- **/
-struct Point2D {
-    int x;
-    int y;
-};
 
 /**
  * Enums
@@ -66,12 +59,12 @@ mode debug = mode::none;
 double tolerance = 0.00000001;
 
 // Renderer settings
-int w = 512;
-int h = 512;
+int w = 1024;
+int h = 1024;
 int totalPixels = w * h;
 unsigned char* renderImage = new unsigned char[totalPixels * 4];
 
-int maxBounces = 5;
+int maxBounces = 1;
 
 // Renderer statistics
 time_t start;
@@ -84,7 +77,7 @@ int totalRenderedPoints = 0;
 bool* renderedPoints = new bool[totalPixels];
 
 // Camera configuration
-Ray3D eye(Point3D(100, 0, 100), Vector3D(-1, 0, 1).unitize());
+Ray3D eye(Point3D(-50, 200, 0), Vector3D(0, -0.7, 1).unitize());
 double pixelsPerMeter = 10;
 double fov = 85;
 

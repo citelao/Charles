@@ -34,6 +34,7 @@ class Vector3D {
     double operator*(const Vector3D &nv) const;
     Vector3D cross(const Vector3D &nv) const;
     
+    double squaredmagnitude(void) const;
     double magnitude(void) const;
     Vector3D unitize(void) const;
     
