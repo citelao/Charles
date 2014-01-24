@@ -13,14 +13,17 @@
 #include "Vector3D.h"
 #include "Ray3D.h"
 #include "Color.h"
+#include "Texture.h"
 
 class PhysicalObject {
 public:
+    PhysicalObject(Texture *texture) : texture(texture) {};
+    
     virtual bool collides(const Ray3D &r, Point3D* p) = 0;
     virtual Vector3D normal(const Point3D &p) = 0;
-    virtual double reflectivity(const Point3D &p) = 0;
-    virtual Color color(const Point3D &p) = 0;
     virtual ~PhysicalObject() {}
+    
+    Texture *texture = 0;
 };
 
 #endif /* defined(__Charles__PhysicalObject__) */

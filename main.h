@@ -25,6 +25,7 @@
 #include "Vector3D.h"
 #include "Sphere.h"
 #include "RectPrism.h"
+#include "SolidTexture.h"
 #include "Light.h"
 
 /**

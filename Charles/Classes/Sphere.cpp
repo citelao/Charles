@@ -35,11 +35,3 @@ bool Sphere::collides(const Ray3D &r, Point3D* p) {
 Vector3D Sphere::normal(const Point3D &p) {
     return (p - center).unitize();
 }
-
-double Sphere::reflectivity(const Point3D &p) {
-    return _reflectivity;
-}
-
-Color Sphere::color(const Point3D &p) {
-    return _color;
-}

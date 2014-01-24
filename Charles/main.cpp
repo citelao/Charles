@@ -27,11 +27,11 @@ int main(int argc, const char * argv[])
 //    }
 //    }
     
-    objects.push_back(new RectPrism(-700, -20, -900, 9001, 10, 9001, 0.1));
+    objects.push_back(new RectPrism(new SolidTexture(Color(255, 130, 0)), Point3D(-700, -20, -900), Vector3D(9001, 10, 9001)));
     
-    objects.push_back(new Sphere(-100, 30, 300, 40, 0.9));
-    objects.push_back(new Sphere(-180, 30, 270, 40, 0.9));
-    objects.push_back(new Sphere(-80, 30, 200, 40, 0));
+    objects.push_back(new Sphere(new SolidTexture(), -100, 30, 300, 40));
+    objects.push_back(new Sphere(new SolidTexture(Color(255), 0.9), -180, 30, 270, 40));
+    objects.push_back(new Sphere(new SolidTexture(), -80, 30, 200, 40));
     
 //    objects.push_back(new RectPrism(50, -10, 150, 10, 200, 300, 0.9));
 
@@ -276,7 +276,7 @@ Color cast(const Ray3D &_r, int _bounces)
         }
         
         // Send out a reflection ray
-        double reflectivity = closest->reflectivity(collision);
+        double reflectivity = closest->texture->reflectivity(collision);
         
         Color reflection = Color(0, 0, 0);
         if (reflectivity >= 0 + tolerance) {
@@ -290,7 +290,7 @@ Color cast(const Ray3D &_r, int _bounces)
         
         // Send out light rays to each light.
         // Using Lambertian reflectance for now.
-        Color localColor = closest->color(collision);
+        Color localColor = closest->texture->localColor(collision);
         double brightness = 0;
         
         if (reflectivity <= 1 - tolerance) {

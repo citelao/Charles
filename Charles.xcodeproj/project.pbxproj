@@ -9,9 +9,9 @@
 /* Begin PBXBuildFile section */
 		7E17B6721818DC090080FB2A /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E17B6711818DC090080FB2A /* main.cpp */; };
 		7E17B6771818DC3B0080FB2A /* Vector3D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E17B6751818DC3B0080FB2A /* Vector3D.cpp */; };
-		7E3C56D21891D05C00FAB14B /* SolidColor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E3C56D01891D05C00FAB14B /* SolidColor.cpp */; };
-		7E3C56D51891D07A00FAB14B /* Colorizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E3C56D31891D07A00FAB14B /* Colorizer.cpp */; };
 		7E3C56D81891D0F000FAB14B /* Point2D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E3C56D61891D0F000FAB14B /* Point2D.cpp */; };
+		7E3C56DB1891D5FB00FAB14B /* Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E3C56D91891D5FB00FAB14B /* Texture.cpp */; };
+		7E3C56E01891DF0300FAB14B /* SolidTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E3C56DE1891DF0300FAB14B /* SolidTexture.cpp */; };
 		7E95D5771818BC0E002B9D85 /* sfml-graphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E95D5731818BC0E002B9D85 /* sfml-graphics.framework */; };
 		7E95D5781818BC0E002B9D85 /* sfml-system.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E95D5741818BC0E002B9D85 /* sfml-system.framework */; };
 		7E95D5791818BC0E002B9D85 /* sfml-window.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E95D5751818BC0E002B9D85 /* sfml-window.framework */; };
@@ -52,12 +52,12 @@
 		7E17B6711818DC090080FB2A /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = Charles/main.cpp; sourceTree = "<group>"; };
 		7E17B6751818DC3B0080FB2A /* Vector3D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Vector3D.cpp; sourceTree = "<group>"; };
 		7E17B6761818DC3B0080FB2A /* Vector3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vector3D.h; sourceTree = "<group>"; };
-		7E3C56D01891D05C00FAB14B /* SolidColor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SolidColor.cpp; sourceTree = "<group>"; };
-		7E3C56D11891D05C00FAB14B /* SolidColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SolidColor.h; sourceTree = "<group>"; };
-		7E3C56D31891D07A00FAB14B /* Colorizer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Colorizer.cpp; sourceTree = "<group>"; };
-		7E3C56D41891D07A00FAB14B /* Colorizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Colorizer.h; sourceTree = "<group>"; };
 		7E3C56D61891D0F000FAB14B /* Point2D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Point2D.cpp; sourceTree = "<group>"; };
 		7E3C56D71891D0F000FAB14B /* Point2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Point2D.h; sourceTree = "<group>"; };
+		7E3C56D91891D5FB00FAB14B /* Texture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Texture.cpp; sourceTree = "<group>"; };
+		7E3C56DA1891D5FB00FAB14B /* Texture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Texture.h; sourceTree = "<group>"; };
+		7E3C56DE1891DF0300FAB14B /* SolidTexture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SolidTexture.cpp; sourceTree = "<group>"; };
+		7E3C56DF1891DF0300FAB14B /* SolidTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SolidTexture.h; sourceTree = "<group>"; };
 		7E5D83E61818976C005CC665 /* Charles */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Charles; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E7F0B8B18230D7100D21D7D /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7E95D5731818BC0E002B9D85 /* sfml-graphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "sfml-graphics.framework"; path = "../../../../../Library/Frameworks/sfml-graphics.framework"; sourceTree = "<group>"; };
@@ -132,19 +132,19 @@
 			children = (
 				7E98E00918512B0800FE6A85 /* PhysicalObject.cpp */,
 				7E98E0021851144C00FE6A85 /* PhysicalObject.h */,
-				7E3C56D31891D07A00FAB14B /* Colorizer.cpp */,
-				7E3C56D41891D07A00FAB14B /* Colorizer.h */,
+				7E3C56D91891D5FB00FAB14B /* Texture.cpp */,
+				7E3C56DA1891D5FB00FAB14B /* Texture.h */,
 			);
 			name = Abstract;
 			sourceTree = "<group>";
 		};
-		7E3C56CF1891D00F00FAB14B /* Colorizer */ = {
+		7E3C56DC1891DEE800FAB14B /* Textures */ = {
 			isa = PBXGroup;
 			children = (
-				7E3C56D01891D05C00FAB14B /* SolidColor.cpp */,
-				7E3C56D11891D05C00FAB14B /* SolidColor.h */,
+				7E3C56DE1891DF0300FAB14B /* SolidTexture.cpp */,
+				7E3C56DF1891DF0300FAB14B /* SolidTexture.h */,
 			);
-			name = Colorizer;
+			name = Textures;
 			sourceTree = "<group>";
 		};
 		7E5D83DD1818976C005CC665 = {
@@ -197,7 +197,7 @@
 			isa = PBXGroup;
 			children = (
 				7E3C56C51891CCAC00FAB14B /* Abstract */,
-				7E3C56CF1891D00F00FAB14B /* Colorizer */,
+				7E3C56DC1891DEE800FAB14B /* Textures */,
 				7ED3A519182469AC00EABE3B /* Sphere.cpp */,
 				7ED3A51A182469AC00EABE3B /* Sphere.h */,
 				7EEB7D64188B20940047C2F0 /* RectPrism.cpp */,
@@ -277,15 +277,15 @@
 			files = (
 				7E98E00A18512B0800FE6A85 /* PhysicalObject.cpp in Sources */,
 				7EB494D7188CCA81008CF253 /* Color.cpp in Sources */,
+				7E3C56E01891DF0300FAB14B /* SolidTexture.cpp in Sources */,
 				7E17B6721818DC090080FB2A /* main.cpp in Sources */,
 				7ED3A51B182469AC00EABE3B /* Light.cpp in Sources */,
 				7ED3A51C182469AC00EABE3B /* Sphere.cpp in Sources */,
-				7E3C56D21891D05C00FAB14B /* SolidColor.cpp in Sources */,
+				7E3C56DB1891D5FB00FAB14B /* Texture.cpp in Sources */,
 				7E17B6771818DC3B0080FB2A /* Vector3D.cpp in Sources */,
 				7E98E007185126EF00FE6A85 /* Ray3D.cpp in Sources */,
 				7E3C56D81891D0F000FAB14B /* Point2D.cpp in Sources */,
 				7EEB7D66188B20940047C2F0 /* RectPrism.cpp in Sources */,
-				7E3C56D51891D07A00FAB14B /* Colorizer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
