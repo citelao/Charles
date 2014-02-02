@@ -70,7 +70,7 @@ const int h = 512;
 const int totalPixels = w * h;
 unsigned char* renderImage = new unsigned char[totalPixels * 4];
 
-int maxBounces = 5;
+int maxBounces = 50;
 
 // Renderer statistics
 time_t start;

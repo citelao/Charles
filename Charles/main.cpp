@@ -35,7 +35,7 @@ int main(int argc, const char * argv[])
     // Ground plane.
     objects.push_back(new RectPrism(new CheckerboardTexture(Color(255, 130, 0)), Point3D(-700, -20, -900), Vector3D(9001, 10, 9001)));
     
-    objects.push_back(new Sphere(new SolidTexture(Color(255), 0.9, 1, 1.3), -100, 30, 300, 40));
+    objects.push_back(new Sphere(new SolidTexture(Color(255), 0, 1, 1.3), -100, 30, 300, 40));
 //    objects.push_back(new Sphere(new SolidTexture(Color(255), 0.8, 1, 1.3), -180, 30, 270, 40));
     objects.push_back(new Sphere(new CheckerboardTexture(Color(255)), -180, 30, 270, 40));
 //    objects.push_back(new Sphere(new SolidTexture(Color(255), 0, 1, 1), -80, 30, 200, 40));

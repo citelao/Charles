@@ -9,7 +9,7 @@
 #include "Camera.h"
 
 Camera::Camera(Ray3D eye, Vector2D screen, double fov, double pixelsPerMeter)
-: eye(eye), screen(screen), fov(fov), pixelsPerMeter(pixelsPerMeter){
+: eye(eye), screen(screen), fov(fov), pixelsPerMeter(pixelsPerMeter) {
     // width / (2 * tan(fov / 2))
     screenDistance = screen.x / (2 * tan((M_PI * fov / 180) / 2));
 }
@@ -35,6 +35,7 @@ Ray3D Camera::translate(Point2D p2d) {
     Vector3D uv = ((eye.traverse(screenDistance).p + p) - eye.p).unitize();
 
     // Start from eye
+    // TODO allow start from near plane
     return Ray3D(eye.p, uv);
 }
 
@@ -44,11 +45,12 @@ Point2D Camera::translate(Point3D p) {
 //    Vector3D orth = to.p - eye.traverse(screenDistance).p;
     
     Ray3D n = eye.traverse(screenDistance);
-    Vector3D pr = p - n.p;
+    Vector3D pr = p - eye.p;
     Vector3D proj = eye.uv * (eye.uv * pr) / eye.uv.magnitude();
     Vector3D orth = pr - proj;
     
-    Vector3D screen = orth.unitize() * (n.p.magnitude() * orth.magnitude() / (n.p.magnitude() + proj.magnitude()));
+    Vector3D screen = orth.unitize() * (n.p.magnitude() * orth.magnitude() / proj.magnitude());
+
     
     return Point2D(screen.x * pixelsPerMeter, screen.y * pixelsPerMeter);
 }
