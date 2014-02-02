@@ -31,80 +31,81 @@ void RectPrism::init(Point3D corner, Vector3D dimensions) {
     _maxcorner = _mincorner + _dimensions;
 }
 
-bool RectPrism::collides(const Ray3D &r, Point3D* p) {
-    double t;
+bool RectPrism::collides(const Ray3D &r, Point3D *p, double *t) {
+    double _t;
     double lowT = INFINITY;
     Point3D i;
     Point3D lowI;
     
     // Check for front face
-    t = (_mincorner.z - r.p.z) / r.uv.z;
-    i = r.traverse(t).p;
+    _t = (_mincorner.z - r.p.z) / r.uv.z;
+    i = r.traverse(_t).p;
     
     if (_mincorner.x <= i.x && i.x <= _maxcorner.x &&
         _mincorner.y <= i.y && i.y <= _maxcorner.y &&
-        t < lowT && t > 0) {
+        _t < lowT && _t > 0) {
         lowI = i;
-        lowT = t;
+        lowT = _t;
     }
     
     // Check for back face
-    t = (_maxcorner.z - r.p.z) / r.uv.z;
-    i = r.traverse(t).p;
+    _t = (_maxcorner.z - r.p.z) / r.uv.z;
+    i = r.traverse(_t).p;
     
     if (_mincorner.x <= i.x && i.x <= _maxcorner.x &&
         _mincorner.y <= i.y && i.y <= _maxcorner.y &&
-        t < lowT && t > 0) {
+        _t < lowT && _t > 0) {
         lowI = i;
-        lowT = t;
+        lowT = _t;
     }
     
     // Check for left face
-    t = (_mincorner.y - r.p.y) / r.uv.y;
-    i = r.traverse(t).p;
+    _t = (_mincorner.y - r.p.y) / r.uv.y;
+    i = r.traverse(_t).p;
     
     if (_mincorner.x <= i.x && i.x <= _maxcorner.x &&
         _mincorner.z <= i.z && i.z <= _maxcorner.z &&
-        t < lowT && t > 0) {
+        _t < lowT && _t > 0) {
         lowI = i;
-        lowT = t;
+        lowT = _t;
     }
     
     // Check for right face
-    t = (_maxcorner.y - r.p.y) / r.uv.y;
-    i = r.traverse(t).p;
+    _t = (_maxcorner.y - r.p.y) / r.uv.y;
+    i = r.traverse(_t).p;
     
     if (_mincorner.x <= i.x && i.x <= _maxcorner.x &&
         _mincorner.z <= i.z && i.z <= _maxcorner.z &&
-        t < lowT && t > 0) {
+        _t < lowT && _t > 0) {
         lowI = i;
-        lowT = t;
+        lowT = _t;
     }
     
     // Check for top face
-    t = (_maxcorner.x - r.p.x) / r.uv.x;
-    i = r.traverse(t).p;
+    _t = (_maxcorner.x - r.p.x) / r.uv.x;
+    i = r.traverse(_t).p;
     
     if (_mincorner.y <= i.y && i.y <= _maxcorner.y &&
         _mincorner.z <= i.z && i.z <= _maxcorner.z &&
-        t < lowT && t > 0) {
+        _t < lowT && _t > 0) {
         lowI = i;
-        lowT = t;
+        lowT = _t;
     }
     
     // Check for bottom face
-    t = (_mincorner.x - r.p.x) / r.uv.x;
-    i = r.traverse(t).p;
+    _t = (_mincorner.x - r.p.x) / r.uv.x;
+    i = r.traverse(_t).p;
     
     if (_mincorner.y <= i.y && i.y <= _maxcorner.y &&
         _mincorner.z <= i.z && i.z <= _maxcorner.z &&
-        t < lowT && t > 0) {
+        _t < lowT && _t > 0) {
         lowI = i;
-        lowT = t;
+        lowT = _t;
     }
     
     if (lowT != INFINITY) {
         *p = lowI;
+        *t = lowT;
         return true;
     }
     

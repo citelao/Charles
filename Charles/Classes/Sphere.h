@@ -15,7 +15,7 @@
 
 class Sphere : public PhysicalObject {
 public:
-    bool collides(const Ray3D &r, Point3D* p);
+    bool collides(const Ray3D &r, Point3D *p, double *t);
     Vector3D normal(const Point3D &p);
     
     Sphere(Texture *texture, Point3D _c = 0, double _r = 0): PhysicalObject(texture), center(_c), radius(_r) {};
@@ -24,8 +24,6 @@ public:
 protected:
     Point3D center;
     double radius;
-    double _reflectivity;
-    Color _color = Color(0, 130, 255);
 };
 
 #endif /* defined(__Charles__Sphere__) */

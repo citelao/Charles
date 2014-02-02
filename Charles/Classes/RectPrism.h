@@ -15,7 +15,7 @@
 
 class RectPrism: public PhysicalObject {
 public:
-    bool collides(const Ray3D &r, Point3D* p);
+    bool collides(const Ray3D &r, Point3D *p, double *t);
     Vector3D normal(const Point3D &p);
     
     RectPrism(Texture *texture, double x, double y, double z, double width, double height, double depth);
@@ -23,9 +23,6 @@ public:
     
 protected:
     double tolerance = 0.00000001;
-    
-    double _reflectivity;
-    Color _color = Color(50, 0, 180);
     
     Vector3D _dimensions;
     Point3D _mincorner;
