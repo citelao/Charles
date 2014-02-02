@@ -9,10 +9,11 @@
 #include "SolidTexture.h"
 
 // Constructors
-SolidTexture::SolidTexture(Color color, double reflectivity, double refractivity) {
+SolidTexture::SolidTexture(Color color, double reflectivity, double refractivity, double indexOfRefraction) {
     _localColor = Color(color);
     _reflectivity = reflectivity;
     _refractivity = refractivity;
+    _indexOfRefraction = indexOfRefraction;
 }
 
 // Local color
@@ -36,4 +37,8 @@ bool SolidTexture::isRefractive(const Point3D &p) {
 
 double SolidTexture::refractivity(const Point3D &p) {
     return _refractivity;
+}
+
+double SolidTexture::indexOfRefraction(const Point3D &p) {
+    return _indexOfRefraction;
 }

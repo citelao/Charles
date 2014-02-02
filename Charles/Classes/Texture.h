@@ -25,6 +25,7 @@ public:
     // Refraction & transparency
     virtual bool isRefractive(const Point3D &p) = 0;
     virtual double refractivity(const Point3D &p) = 0;
+    virtual double indexOfRefraction(const Point3D &p) = 0;
     
     // Emission?
     // ???

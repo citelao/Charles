@@ -8,7 +8,7 @@
 
 #include "Sphere.h"
 
-bool Sphere::collides(const Ray3D &r, Point3D* p) {
+bool Sphere::collides(const Ray3D &r, Point3D *p, double *t) {
     // Use the quadratic equation to solve for sphere intersection.
     double a = r.uv * r.uv;
     double b = 2 * ((r.p - center) * r.uv);
@@ -25,9 +25,10 @@ bool Sphere::collides(const Ray3D &r, Point3D* p) {
         return false;
     }
     
-    Point3D cp = r.p + r.uv * near;
+    Point3D cp = r.traverse(near).p;
     
     *p = cp;
+    *t = near;
     
     return true;
 }

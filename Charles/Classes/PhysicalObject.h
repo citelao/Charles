@@ -19,7 +19,7 @@ class PhysicalObject {
 public:
     PhysicalObject(Texture *texture) : texture(texture) {};
     
-    virtual bool collides(const Ray3D &r, Point3D* p) = 0;
+    virtual bool collides(const Ray3D &r, Point3D *p, double *t) = 0;
     virtual Vector3D normal(const Point3D &p) = 0;
     virtual ~PhysicalObject() {}
     
