@@ -11,33 +11,65 @@
 
 #include <iostream>
 
-
 class Color {
 public:
-    unsigned char r;
-    unsigned char g;
-    unsigned char b;
-    unsigned char a = 255;
-    
-    Color(unsigned char _r, unsigned char _g, unsigned char _b)
-    : r(_r), g(_g), b(_b) {};
-    
-    Color(int _r, int _g, int _b);
-    Color(double _r, double _g, double _b);
-    
-    Color(int _c);
-    Color(double _c);
-    
     // TODO global colors (white, black, etc)
     
+    template <class T>
+    Color(T r, T g, T b) {
+        _r = (unsigned char)r;
+        _g = (unsigned char)g;
+        _b = (unsigned char)b;
+        _a = 255;
+    };
+    
+    template <class T>
+    Color(T c) {
+        _r = (unsigned char)c;
+        _g = (unsigned char)c;
+        _b = (unsigned char)c;
+        _a = 255;
+    };
+    
     // Operators
-    Color operator+(const Color &c) const;
-    Color operator+(const int &c) const;
-    Color operator+(const double &c) const;
-
-    Color operator*(const Color &c) const;
-    Color operator*(const int &c) const;
-    Color operator*(const double &c) const;
+//    Color operator+(const Color &c) const;
+    
+    template <class T, class U>
+    friend Color operator+(const T &c1, const U &c2) {
+        return Color(c1) + Color(c2);
+    };
+    friend Color operator+(const Color &c1, const Color &c2);
+    
+    template <class T, class U>
+    friend Color operator*(const T &c1, const U &c2) {
+        return Color(c1) * Color(c2);
+    };
+    friend Color operator*(const Color &c1, const Color &c2);
+    friend Color operator*(const Color &c1, const double &c2);
+    friend Color operator*(const double &c1, const Color &c2);
+    
+    unsigned char r() { return r<unsigned char>(); };
+    unsigned char g() { return g<unsigned char>(); };
+    unsigned char b() { return b<unsigned char>(); };
+    unsigned char a() { return a<unsigned char>(); };
+    
+    template <class T>
+    T r() { return (T) _r; };
+    
+    template <class T>
+    T g() { return (T) _g; };
+    
+    template <class T>
+    T b() { return (T) _b; };
+    
+    template <class T>
+    T a() { return (T) _a; };
+    
+private:
+    unsigned char _r;
+    unsigned char _g;
+    unsigned char _b;
+    unsigned char _a;
 };
 
 #endif /* defined(__Charles__Color__) */

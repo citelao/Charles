@@ -183,38 +183,6 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Charles/Classes/Color.cpp"
-            timestampString = "412116868.960791"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "80"
-            endingLineNumber = "80"
-            landmarkName = "Color::operator*(const double &amp;c)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Charles/main.cpp"
-            timestampString = "412995951.441888"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "416"
-            endingLineNumber = "416"
-            landmarkName = "cast(const Ray3D &amp;_r, int _bounces, PhysicalObject *substance, std::vector&lt;Point3D&gt; *bounced)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "Charles/main.cpp"
             timestampString = "412995951.441888"
             startingColumnNumber = "9223372036854775807"
@@ -274,16 +242,32 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Charles/main.cpp"
+            timestampString = "428273388.772728"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "445"
+            endingLineNumber = "445"
+            landmarkName = "cast(const Ray3D &amp;_r, int _bounces, PhysicalObject *substance, std::vector&lt;Point3D&gt; *bounced)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Charles/Classes/Camera.cpp"
-            timestampString = "412997191.127073"
+            filePath = "Charles/Classes/Color.h"
+            timestampString = "428276508.670781"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "53"
-            endingLineNumber = "53"
-            landmarkName = "Camera::translate(Point3D p)"
+            startingLineNumber = "45"
+            endingLineNumber = "45"
+            landmarkName = "operator*(const T &amp;c1, const U &amp;c2)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

@@ -251,10 +251,10 @@ void render()
         }
         
         // Write the RGBA codes to the unsigned char array.
-        renderImage[((screenPoint.y * w) + screenPoint.x) * 4]     = c.r;
-        renderImage[((screenPoint.y * w) + screenPoint.x) * 4 + 1] = c.g;
-        renderImage[((screenPoint.y * w) + screenPoint.x) * 4 + 2] = c.b;
-        renderImage[((screenPoint.y * w) + screenPoint.x) * 4 + 3] = 255; // Alpha must always be 255 to show.
+        renderImage[((screenPoint.y * w) + screenPoint.x) * 4]     = c.r();
+        renderImage[((screenPoint.y * w) + screenPoint.x) * 4 + 1] = c.g();
+        renderImage[((screenPoint.y * w) + screenPoint.x) * 4 + 2] = c.b();
+        renderImage[((screenPoint.y * w) + screenPoint.x) * 4 + 3] = c.a(); // Alpha must always be 255 to show.
         
         // Increment total number of rendered points.
         totalRenderedPoints++;
@@ -442,7 +442,7 @@ Color cast(const Ray3D &_r, int _bounces, PhysicalObject *substance, std::vector
         }
     }
     
-    Color lambertian = localColor * brightness;
+    Color lambertian = brightness * localColor;
     
     return reflection * reflectivity + lambertian * (1-reflectivity);
 }

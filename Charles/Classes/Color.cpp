@@ -8,74 +8,37 @@
 
 #include "Color.h"
 
-
-Color::Color(int _r, int _g, int _b)
-{
-    r = (unsigned char)_r;
-    g = (unsigned char)_g;
-    b = (unsigned char)_b;
-}
-
-Color::Color(double _r, double _g, double _b) {
-    r = (unsigned char)_r;
-    g = (unsigned char)_g;
-    b = (unsigned char)_b;
-}
-
-Color::Color(int _c) {
-    r = (unsigned char)_c;
-    g = (unsigned char)_c;
-    b = (unsigned char)_c;
-}
-
-Color::Color(double _c) {
-    r = (unsigned char)_c;
-    g = (unsigned char)_c;
-    b = (unsigned char)_c;
-}
-
-Color Color::operator+(const Color &c) const {
-    double _r = r + c.r;
-    double _g = g + c.g;
-    double _b = b + c.b;
+Color operator+(const Color &c1, const Color &c2) {
+    double r = c1._r + c2._r;
+    double g = c1._g + c2._g;
+    double b = c1._b + c2._b;
     
-    if (_r > 255) {
-        _r = 255;
+    if (r > 255) {
+        r = 255;
     }
     
-    if (_g > 255) {
-        _g = 255;
+    if (g > 255) {
+        g = 255;
     }
     
-    if (_b > 255) {
-        _b = 255;
+    if (b > 255) {
+        b = 255;
     }
     
-    return Color(_r, _g, _b);
+    return Color(r, g, b);
 }
 
-Color Color::operator+(const int &c) const {
-    return Color(c, c, c) + *this;
-}
-
-Color Color::operator+(const double &c) const {
-    return Color(c, c, c) + *this;
-}
-
-Color Color::operator*(const Color &c) const {
-    double _dr = (double)r * (double)c.r / 255;
-    double _dg = (double)g * (double)c.g / 255;
-    double _db = (double)b * (double)c.b / 255;
+Color operator*(const Color &c1, const Color &c2) {
+    double _dr = (double)c1._r * (double)c2._r / 255;
+    double _dg = (double)c1._g * (double)c2._g / 255;
+    double _db = (double)c1._b * (double)c2._b / 255;
     
     return Color(_dr, _dg, _db);
 }
 
-Color Color::operator*(const int &c) const {
-    return Color(c) * *this;
+Color operator*(const Color &c1, const double &c2) {
+    return c1 * Color(c2 * 255);
 }
-
-Color Color::operator*(const double &c) const {
-    int _color = 255 * c;
-    
-    return Color(_color) * *this;
+Color operator*(const double &c1, const Color &c2) {
+    return c2 * c1; // Avoid duplication
 }

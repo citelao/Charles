@@ -22,8 +22,6 @@
 		7EA6DD191893437900B98633 /* mission.otf in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7EA6DD171893420A00B98633 /* mission.otf */; };
 		7EA6DD1C18935DD400B98633 /* CheckerboardTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EA6DD1A18935DD400B98633 /* CheckerboardTexture.cpp */; };
 		7EB494D7188CCA81008CF253 /* Color.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EB494D5188CCA81008CF253 /* Color.cpp */; };
-		7ED3A511182468E700EABE3B /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ED3A510182468E700EABE3B /* main.cpp */; };
-		7ED3A513182468E700EABE3B /* Test.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7ED3A512182468E700EABE3B /* Test.1 */; };
 		7ED3A51B182469AC00EABE3B /* Light.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ED3A517182469AC00EABE3B /* Light.cpp */; };
 		7ED3A51C182469AC00EABE3B /* Sphere.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ED3A519182469AC00EABE3B /* Sphere.cpp */; };
 		7EEB7D66188B20940047C2F0 /* RectPrism.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EEB7D64188B20940047C2F0 /* RectPrism.cpp */; };
@@ -46,7 +44,6 @@
 			dstPath = /usr/share/man/man1/;
 			dstSubfolderSpec = 0;
 			files = (
-				7ED3A513182468E700EABE3B /* Test.1 in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
@@ -81,8 +78,6 @@
 		7EB494D5188CCA81008CF253 /* Color.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Color.cpp; sourceTree = "<group>"; };
 		7EB494D6188CCA81008CF253 /* Color.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Color.h; sourceTree = "<group>"; };
 		7ED3A50E182468E700EABE3B /* Test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Test; sourceTree = BUILT_PRODUCTS_DIR; };
-		7ED3A510182468E700EABE3B /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		7ED3A512182468E700EABE3B /* Test.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = Test.1; sourceTree = "<group>"; };
 		7ED3A517182469AC00EABE3B /* Light.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Light.cpp; sourceTree = "<group>"; };
 		7ED3A518182469AC00EABE3B /* Light.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Light.h; sourceTree = "<group>"; };
 		7ED3A519182469AC00EABE3B /* Sphere.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Sphere.cpp; sourceTree = "<group>"; };
@@ -169,7 +164,6 @@
 				7E17B6731818DC0F0080FB2A /* Charles */,
 				7EA6DD181893420D00B98633 /* Resources */,
 				7E17B6741818DC190080FB2A /* Classes */,
-				7ED3A50F182468E700EABE3B /* Test */,
 				7E5D83E71818976C005CC665 /* Products */,
 				7E7F0B8B18230D7100D21D7D /* Info.plist */,
 			);
@@ -212,15 +206,6 @@
 				7EA6DD171893420A00B98633 /* mission.otf */,
 			);
 			name = Resources;
-			sourceTree = "<group>";
-		};
-		7ED3A50F182468E700EABE3B /* Test */ = {
-			isa = PBXGroup;
-			children = (
-				7ED3A510182468E700EABE3B /* main.cpp */,
-				7ED3A512182468E700EABE3B /* Test.1 */,
-			);
-			path = Test;
 			sourceTree = "<group>";
 		};
 		7EEB7D63188B207C0047C2F0 /* Physical Objects */ = {
@@ -325,7 +310,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7ED3A511182468E700EABE3B /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
