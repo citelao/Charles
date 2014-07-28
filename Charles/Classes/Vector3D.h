@@ -12,14 +12,14 @@
 #include <iostream>
 
 class Vector3D {
-    public:
-        double x;
-        double y;
-        double z;
-    
+public:
     // Constructors
-    Vector3D(double x = 0, double y = 0, double z = 0)
-    :x(x), y(y), z(z) {};
+    template <class T>
+    Vector3D(T x = 0, T y = 0, T z = 0)
+    :_x(x), _y(y), _z(z) {};
+    
+    Vector3D()
+    :Vector3D(0, 0, 0) {};
     
     // TODO implement a null vector
     
@@ -39,6 +39,22 @@ class Vector3D {
     Vector3D unitize(void) const;
     
     Vector3D reflect(const Vector3D &nv) const;
+    
+    const double x() const { return _x; };
+    const double y() const { return _y; };
+    const double z() const { return _z; };
+    
+    template <class T>
+    const T x() const { return _x; };
+    template <class T>
+    const T y() const { return _y; };
+    template <class T>
+    const T z() const { return _z; };
+    
+private:
+    double _x;
+    double _y;
+    double _z;
 };
 
 // Vectors and Points are interchangeable mathwise, but I like keeping variables with different names.

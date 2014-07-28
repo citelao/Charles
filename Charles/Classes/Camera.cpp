@@ -16,7 +16,7 @@ Camera::Camera(Ray3D eye, Vector2D screen, double fov, double pixelsPerMeter)
 
 
 Ray3D Camera::translate(Point2D p2d) {
-    Vector3D offset = Vector3D(p2d.x / pixelsPerMeter, p2d.y / pixelsPerMeter, 0);
+    Vector3D offset = Vector3D(p2d.x / pixelsPerMeter, p2d.y / pixelsPerMeter, 0.0);
 
     // Create a coordinate system relative to eye ray.
     // Z' is eye's uv.
@@ -25,12 +25,12 @@ Ray3D Camera::translate(Point2D p2d) {
     // Y' should be Z' cross X'.
     // Thanks Morgan and Thomas Redding!
     Vector3D cZPrime = eye.uv;
-    Vector3D cXPrime = Vector3D(cZPrime.z, 0, -cZPrime.x);
+    Vector3D cXPrime = Vector3D(cZPrime.z(), 0.0, -cZPrime.x());
     Vector3D cYPrime = cZPrime.cross(cXPrime);
 
-    Vector3D p = (cXPrime * offset.x) +
-    (cYPrime * offset.y) +
-    (cZPrime * offset.z);
+    Vector3D p = (cXPrime * offset.x()) +
+    (cYPrime * offset.y()) +
+    (cZPrime * offset.z());
 
     Vector3D uv = ((eye.traverse(screenDistance).p + p) - eye.p).unitize();
 
@@ -52,5 +52,5 @@ Point2D Camera::translate(Point3D p) {
     Vector3D screen = orth.unitize() * (n.p.magnitude() * orth.magnitude() / proj.magnitude());
 
     
-    return Point2D(screen.x * pixelsPerMeter, screen.y * pixelsPerMeter);
+    return Point2D(screen.x() * pixelsPerMeter, screen.y() * pixelsPerMeter);
 }

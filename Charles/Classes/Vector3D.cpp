@@ -11,41 +11,41 @@
 
 Vector3D Vector3D::operator+(const Vector3D &nv) const
 {
-    return Vector3D(x + nv.x, y + nv.y, z + nv.z);
+    return Vector3D(_x + nv._x, _y + nv._y, _z + nv._z);
 }
 
 Vector3D Vector3D::operator-(const Vector3D &nv) const
 {
-    return Vector3D(x - nv.x, y - nv.y, z - nv.z);
+    return Vector3D(_x - nv._x, _y - nv._y, _z - nv._z);
 }
 
 Vector3D Vector3D::operator/(const double &nv) const
 {
-    return Vector3D(x / nv, y / nv, z / nv);
+    return Vector3D(_x / nv, _y / nv, _z / nv);
 }
 
 Vector3D Vector3D::operator*(const double &nv) const
 {
-    return Vector3D(x * nv, y * nv, z * nv);
+    return Vector3D(_x * nv, _y * nv, _z * nv);
 }
 
 // Dot product.
 double Vector3D::operator*(const Vector3D &nv) const
 {
-    return x * nv.x + y * nv.y + z * nv.z;
+    return _x * nv._x + _y * nv._y + _z * nv._z;
 }
 
 // Cross product
 Vector3D Vector3D::cross(const Vector3D &nv) const
 {
-    return Vector3D(y * nv.z - z * nv.y,
-                    z * nv.x - x * nv.z,
-                    x * nv.y - y * nv.x);
+    return Vector3D(_y * nv._z - _z * nv._y,
+                    _z * nv._x - _x * nv._z,
+                    _x * nv._y - _y * nv._x);
 }
 
 double Vector3D::squaredmagnitude(void) const
 {
-    return pow(x, 2) + pow(y, 2) + pow(z, 2);
+    return pow(_x, 2) + pow(_y, 2) + pow(_z, 2);
 }
 
 double Vector3D::magnitude(void) const

@@ -18,7 +18,7 @@ public:
     bool collides(const Ray3D &r, Point3D *p, double *t);
     Vector3D normal(const Point3D &p);
     
-    Sphere(Texture *texture, Point3D _c = 0, double _r = 0): PhysicalObject(texture), center(_c), radius(_r) {};
+    Sphere(Texture *texture, Point3D _c, double _r = 0): PhysicalObject(texture), center(_c), radius(_r) {};
     Sphere(Texture *texture, double _x, double _y, double _z, double _r = 0): PhysicalObject(texture), center(_x, _y, _z), radius(_r) {};
     
 protected:

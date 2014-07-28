@@ -19,9 +19,9 @@ RectPrism::RectPrism(Texture *texture, Point3D corner, Vector3D dimensions)
 }
 
 void RectPrism::init(Point3D corner, Vector3D dimensions) {
-    if (dimensions.x <= 0 ||
-        dimensions.y <= 0 ||
-        dimensions.z <= 0) {
+    if (dimensions.x() <= 0 ||
+        dimensions.y() <= 0 ||
+        dimensions.z() <= 0) {
         throw std::invalid_argument("Rectangular prisms cannot have negative dimensions.");
     }
 
@@ -38,66 +38,66 @@ bool RectPrism::collides(const Ray3D &r, Point3D *p, double *t) {
     Point3D lowI;
     
     // Check for front face
-    _t = (_mincorner.z - r.p.z) / r.uv.z;
+    _t = (_mincorner.z() - r.p.z()) / r.uv.z();
     i = r.traverse(_t).p;
     
-    if (_mincorner.x <= i.x && i.x <= _maxcorner.x &&
-        _mincorner.y <= i.y && i.y <= _maxcorner.y &&
+    if (_mincorner.x() <= i.x() && i.x() <= _maxcorner.x() &&
+        _mincorner.y() <= i.y() && i.y() <= _maxcorner.y() &&
         _t < lowT && _t > 0) {
         lowI = i;
         lowT = _t;
     }
     
     // Check for back face
-    _t = (_maxcorner.z - r.p.z) / r.uv.z;
+    _t = (_maxcorner.z() - r.p.z()) / r.uv.z();
     i = r.traverse(_t).p;
     
-    if (_mincorner.x <= i.x && i.x <= _maxcorner.x &&
-        _mincorner.y <= i.y && i.y <= _maxcorner.y &&
+    if (_mincorner.x() <= i.x() && i.x() <= _maxcorner.x() &&
+        _mincorner.y() <= i.y() && i.y() <= _maxcorner.y() &&
         _t < lowT && _t > 0) {
         lowI = i;
         lowT = _t;
     }
     
     // Check for left face
-    _t = (_mincorner.y - r.p.y) / r.uv.y;
+    _t = (_mincorner.y() - r.p.y()) / r.uv.y();
     i = r.traverse(_t).p;
     
-    if (_mincorner.x <= i.x && i.x <= _maxcorner.x &&
-        _mincorner.z <= i.z && i.z <= _maxcorner.z &&
+    if (_mincorner.x() <= i.x() && i.x() <= _maxcorner.x() &&
+        _mincorner.z() <= i.z() && i.z() <= _maxcorner.z() &&
         _t < lowT && _t > 0) {
         lowI = i;
         lowT = _t;
     }
     
     // Check for right face
-    _t = (_maxcorner.y - r.p.y) / r.uv.y;
+    _t = (_maxcorner.y() - r.p.y()) / r.uv.y();
     i = r.traverse(_t).p;
     
-    if (_mincorner.x <= i.x && i.x <= _maxcorner.x &&
-        _mincorner.z <= i.z && i.z <= _maxcorner.z &&
+    if (_mincorner.x() <= i.x() && i.x() <= _maxcorner.x() &&
+        _mincorner.z() <= i.z() && i.z() <= _maxcorner.z() &&
         _t < lowT && _t > 0) {
         lowI = i;
         lowT = _t;
     }
     
     // Check for top face
-    _t = (_maxcorner.x - r.p.x) / r.uv.x;
+    _t = (_maxcorner.x() - r.p.x()) / r.uv.x();
     i = r.traverse(_t).p;
     
-    if (_mincorner.y <= i.y && i.y <= _maxcorner.y &&
-        _mincorner.z <= i.z && i.z <= _maxcorner.z &&
+    if (_mincorner.y() <= i.y() && i.y() <= _maxcorner.y() &&
+        _mincorner.z() <= i.z() && i.z() <= _maxcorner.z() &&
         _t < lowT && _t > 0) {
         lowI = i;
         lowT = _t;
     }
     
     // Check for bottom face
-    _t = (_mincorner.x - r.p.x) / r.uv.x;
+    _t = (_mincorner.x() - r.p.x()) / r.uv.x();
     i = r.traverse(_t).p;
     
-    if (_mincorner.y <= i.y && i.y <= _maxcorner.y &&
-        _mincorner.z <= i.z && i.z <= _maxcorner.z &&
+    if (_mincorner.y() <= i.y() && i.y() <= _maxcorner.y() &&
+        _mincorner.z() <= i.z() && i.z() <= _maxcorner.z() &&
         _t < lowT && _t > 0) {
         lowI = i;
         lowT = _t;
@@ -114,32 +114,32 @@ bool RectPrism::collides(const Ray3D &r, Point3D *p, double *t) {
 
 Vector3D RectPrism::normal(const Point3D &p) {
     // On front face?
-    if (fabs(p.z - _mincorner.z) < tolerance) {
+    if (fabs(p.z() - _mincorner.z()) < tolerance) {
         return Vector3D(0, 0, -1);
     }
     
     // On back face?
-    if (fabs(p.z - _maxcorner.z) < tolerance) {
+    if (fabs(p.z() - _maxcorner.z()) < tolerance) {
         return Vector3D(0, 0, 1);
     }
     
     // On left face?
-    if (fabs(p.y -  _mincorner.y) < tolerance) {
+    if (fabs(p.y() -  _mincorner.y()) < tolerance) {
         return Vector3D(0, -1, 0);
     }
     
     // On right face?
-    if (fabs(p.y - _maxcorner.y) < tolerance) {
+    if (fabs(p.y() - _maxcorner.y()) < tolerance) {
         return Vector3D(0, 1, 0);
     }
     
     // On top face?
-    if (fabs(p.x - _maxcorner.x) < tolerance) {
+    if (fabs(p.x() - _maxcorner.x()) < tolerance) {
         return Vector3D(1, 0, 0);
     }
     
     // On bottom face?
-    if (fabs(p.x - _mincorner.x) < tolerance) {
+    if (fabs(p.x() - _mincorner.x()) < tolerance) {
         return Vector3D(-1, 0, 0);
     }
     

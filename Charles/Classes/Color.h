@@ -48,22 +48,22 @@ public:
     friend Color operator*(const Color &c1, const double &c2);
     friend Color operator*(const double &c1, const Color &c2);
     
-    unsigned char r() { return r<unsigned char>(); };
-    unsigned char g() { return g<unsigned char>(); };
-    unsigned char b() { return b<unsigned char>(); };
-    unsigned char a() { return a<unsigned char>(); };
+    const unsigned char r() { return r<unsigned char>(); };
+    const unsigned char g() { return g<unsigned char>(); };
+    const unsigned char b() { return b<unsigned char>(); };
+    const unsigned char a() { return a<unsigned char>(); };
     
     template <class T>
-    T r() { return (T) _r; };
+    const T r() { return (T) _r; };
     
     template <class T>
-    T g() { return (T) _g; };
+    const T g() { return (T) _g; };
     
     template <class T>
-    T b() { return (T) _b; };
+    const T b() { return (T) _b; };
     
     template <class T>
-    T a() { return (T) _a; };
+    const T a() { return (T) _a; };
     
 private:
     unsigned char _r;

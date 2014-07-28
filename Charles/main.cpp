@@ -202,13 +202,13 @@ int main(int argc, const char * argv[])
         for (int i = 0; i < bounces.size(); i++) {
             Point2D p = camera.translate(bounces[i]);
             
-            s << i << " x: " << bounces[i].x << ", y: " << bounces[i].y << ", z: " << bounces[i].z << "\n";
+            s << i << " x: " << bounces[i].x() << ", y: " << bounces[i].y() << ", z: " << bounces[i].z() << "\n";
             
             if (i == 0) {
                 s << " px: " << p.x << ", y: " << p.y << "\n";
                 
                 Ray3D r2 = camera.translate(p).traverse(camera.screenDistance);
-                s << "r2x: " << r2.p.x << ", y: " << r2.p.y << ", z: " << r2.p.z << "\n";
+                s << "r2x: " << r2.p.x() << ", y: " << r2.p.y() << ", z: " << r2.p.z() << "\n";
             }
             
             mouseRay.append(sf::Vector2f(p.x + w / 2, - p.y + h / 2));
@@ -333,11 +333,11 @@ Color cast(const Ray3D &_r, int _bounces, PhysicalObject *substance, std::vector
     Vector3D normal = closest->normal(collision);
     
     if (debug == mode::normal) {
-        return Color(126 + 126 * normal.x, 126 + 126 * normal.y, 126 + 126 * normal.z);
+        return Color(126 + 126 * normal.x(), 126 + 126 * normal.y(), 126 + 126 * normal.z());
     }
     
     if (debug == mode::normalz) {
-        return Color(126-126 * normal.z);
+        return Color(126-126 * normal.z());
     }
     
     // Send out a reflection ray
@@ -393,7 +393,7 @@ Color cast(const Ray3D &_r, int _bounces, PhysicalObject *substance, std::vector
             Vector3D light = lights[i].center - collision;
             
             if (debug == mode::lightz) {
-                unsigned char b = 126-126 * light.unitize().z;
+                unsigned char b = 126-126 * light.unitize().z();
                 
                 return Color(b,b,b);
             }
