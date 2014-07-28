@@ -21,6 +21,6 @@ public:
     Vector2D(double x, double y)
     : x((int)x), y((int)y) {};
 };
-typedef Vector2D Point2D;
+using Point2D = Vector2D;
 
 #endif /* defined(__Charles__Point2D__) */

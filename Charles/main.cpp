@@ -39,7 +39,7 @@ int main(int argc, const char * argv[])
 //    objects.push_back(new Sphere(new SolidTexture(Color(255), 0.8, 1, 1.3), -180, 30, 270, 40));
     objects.push_back(new Sphere(new CheckerboardTexture(Color(255)), -180, 30, 270, 40));
 //    objects.push_back(new Sphere(new SolidTexture(Color(255), 0, 1, 1), -80, 30, 200, 40));
-    objects.push_back(new RectPrism(new SolidTexture(Color(255), 0, 1, 5), -60, -10, 200, 40, 40, 40));
+    objects.push_back(new RectPrism(new SolidTexture(Color(255), 0, 1, 1.3), -60, -10, 200, 40, 40, 40));
     objects.push_back(new RectPrism(new CheckerboardTexture(Color(255), Color(0)), -300, -10, 400, 600, 500, 40));
     
     // Light 'em up.
@@ -54,7 +54,7 @@ int main(int argc, const char * argv[])
     sf::Font font;
     
     if(!font.loadFromFile("mission.otf"))
-        std::cerr << "whopo";
+        std::cerr << "Could not load font!";
     
     sf::Text text("...", font);
     text.setCharacterSize(30);

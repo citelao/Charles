@@ -58,6 +58,6 @@ private:
 };
 
 // Vectors and Points are interchangeable mathwise, but I like keeping variables with different names.
-typedef Vector3D Point3D;
+using Point3D = Vector3D;
 
 #endif /* defined(__Charles__Vector3D__) */
