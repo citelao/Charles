@@ -10,29 +10,29 @@
 	<string>Charles</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>3503C29A-53F3-4588-8BE1-30608A081A29</key>
-		<string>ssh://github.com/citelao/Charles.git</string>
+		<key>67F6167DE51AE20C6301D77634BDE17E201FEB55</key>
+		<string>github.com:citelao/Charles.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>Charles.xcodeproj/project.xcworkspace</string>
+	<string>Charles.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>3503C29A-53F3-4588-8BE1-30608A081A29</key>
+		<key>67F6167DE51AE20C6301D77634BDE17E201FEB55</key>
 		<string>../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>ssh://github.com/citelao/Charles.git</string>
+	<string>github.com:citelao/Charles.git</string>
 	<key>IDESourceControlProjectVersion</key>
-	<integer>110</integer>
+	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>3503C29A-53F3-4588-8BE1-30608A081A29</string>
+	<string>67F6167DE51AE20C6301D77634BDE17E201FEB55</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>3503C29A-53F3-4588-8BE1-30608A081A29</string>
+			<string>67F6167DE51AE20C6301D77634BDE17E201FEB55</string>
 			<key>IDESourceControlWCCName</key>
 			<string>Charles</string>
 		</dict>

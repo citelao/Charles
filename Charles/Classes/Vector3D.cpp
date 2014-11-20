@@ -29,6 +29,10 @@ Vector3D Vector3D::operator*(const double &nv) const
     return Vector3D(_x * nv, _y * nv, _z * nv);
 }
 
+Vector3D operator*(const double &nv, const Vector3D &v) {
+    return Vector3D(v._x * nv, v._y * nv, v._z * nv);
+}
+
 // Dot product.
 double Vector3D::operator*(const Vector3D &nv) const
 {
@@ -61,4 +65,16 @@ Vector3D Vector3D::unitize(void) const
 Vector3D Vector3D::reflect(const Vector3D &normal) const
 {
     return *this + normal * 2;
+}
+
+const Vector3D Vector3D::rotate(const Vector3D &rotation) const {
+    // Rotate a vector by rotation radians in each direction.
+    // ?
+//    return this->cross(rotation);
+//    return this;
+    return *this;
+}
+
+std::ostream &operator<<(std::ostream &stream, const Vector3D &vector) {
+    return stream << "(" << vector.x() << ", " << vector.y() << ", " << vector.z() << ")";
 }

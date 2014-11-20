@@ -17,6 +17,7 @@ int main(int argc, const char * argv[])
 
     // Time everything!
     start = time(NULL);
+    std::srand((unsigned int)std::time(0));
     
     /**
      * Instantiate scene
@@ -31,7 +32,7 @@ int main(int argc, const char * argv[])
 //    }
 //    }
 //    }
-//    
+//
     // Ground plane.
     objects.push_back(new RectPrism(new CheckerboardTexture(Color(255, 130, 0)), Point3D(-700, -20, -900), Vector3D(9001, 10, 9001)));
     
@@ -41,6 +42,8 @@ int main(int argc, const char * argv[])
 //    objects.push_back(new Sphere(new SolidTexture(Color(255), 0, 1, 1), -80, 30, 200, 40));
     objects.push_back(new RectPrism(new SolidTexture(Color(255), 0, 1, 1.3), -60, -10, 200, 40, 40, 40));
     objects.push_back(new RectPrism(new CheckerboardTexture(Color(255), Color(0)), -300, -10, 400, 600, 500, 40));
+
+    objects.push_back(new RectPrism(new CheckerboardTexture(Color(255), Color(0)), -600, -600, 400, 1000, 2000, 40));
     
     // Light 'em up.
     lights.push_back(Light(100, 100, 300, 80));
@@ -64,14 +67,19 @@ int main(int argc, const char * argv[])
     /** 
      * Start render threads.
      **/
-    std::thread rt1(&render);
-    std::thread rt2(&render);
-    std::thread rt3(&render);
-    std::thread rt4(&render);
-    rt1.detach();
-    rt2.detach();
-    rt3.detach();
-    rt4.detach();
+    for (int i = 0; i < 10; i++) {
+        std::thread thread(&render);
+        thread.detach();
+    }
+//    
+//    std::thread rt1(&render);
+//    std::thread rt2(&render);
+//    std::thread rt3(&render);
+//    std::thread rt4(&render);
+//    rt1.detach();
+//    rt2.detach();
+//    rt3.detach();
+//    rt4.detach();
     
     /**
      * Sensible optimization
@@ -102,15 +110,48 @@ int main(int argc, const char * argv[])
                 }
             }
             
+            // TODO remove
+//            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Equal)) {
+//                fov += 1;
+//                
+//                camera = Camera(camera.eye, Vector2D(w, h), fov, pixelsPerMeter);
+//                unsigned char *tempRenderImage = renderImage;
+//                renderImage = new unsigned char[totalPixels * 4] {255};
+//                delete[] tempRenderImage;
+//                
+//                renderedPoints.reset();
+//                
+//                if (currentState != state::rendering) {
+//                    currentState = state::rendering;
+//                    std::thread rt1(&render);
+//                    std::thread rt2(&render);
+//                    std::thread rt3(&render);
+//                    std::thread rt4(&render);
+//                    rt1.detach();
+//                    rt2.detach();
+//                    rt3.detach();
+//                    rt4.detach();
+//                }
+//            }
+            
             if (event.type == sf::Event::MouseMoved) {
                 if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
                     if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
                         camera.eye.p = (dragEye.p - Vector3D(sf::Mouse::getPosition().x - dragMouseOrigin.x, dragMouseOrigin.y - sf::Mouse::getPosition().y, 0) * 0.5);
                     } else {
+                        double dx = sf::Mouse::getPosition().x - dragMouseOrigin.x;
+                        double dy = dragMouseOrigin.y - sf::Mouse::getPosition().y;
+                        
+                        // Rotation in radians to apply to the vector.
+                        Vector3D rot = (0.005 * Vector3D(dx, dy));
+//                        camera.eye.uv = camera.eye.uv.rotate(rot);
+                        
+//                        std::cout << Vector3D(-1.5, 1.5, 2.5).angle(1) << " " << ((int)(3.5 / 1) % 2) << std::endl;
+                        
+                        // TODO better movement
+                        
                         camera.eye.uv = (dragEye.uv - Vector3D(sf::Mouse::getPosition().x - dragMouseOrigin.x, dragMouseOrigin.y - sf::Mouse::getPosition().y, 0) * 0.005).unitize();
                     }
-                
-//                    std::cout << camera.eye.uv.x << " " << camera.eye.uv.y << "\n";
                     
                     unsigned char *tempRenderImage = renderImage;
                     renderImage = new unsigned char[totalPixels * 4] {255};
@@ -199,16 +240,17 @@ int main(int argc, const char * argv[])
         cast(r, 0, NULL, &bounces);
         
         std::stringstream s;
+        s << "camera: " << camera.eye.p << " rot: " << camera.eye.uv << " fov: " << fov << "\n";
         for (int i = 0; i < bounces.size(); i++) {
             Point2D p = camera.translate(bounces[i]);
             
-            s << i << " x: " << bounces[i].x() << ", y: " << bounces[i].y() << ", z: " << bounces[i].z() << "\n";
+            s << "bounce " << i << ": " << bounces[i] << "\n";
             
             if (i == 0) {
-                s << " px: " << p.x << ", y: " << p.y << "\n";
+                s << "> screen pos: (" << p.x << ", " << p.y << ")\n";
                 
                 Ray3D r2 = camera.translate(p).traverse(camera.screenDistance);
-                s << "r2x: " << r2.p.x() << ", y: " << r2.p.y() << ", z: " << r2.p.z() << "\n";
+                s << ">> goes to: " << r2.p << "\n";
             }
             
             mouseRay.append(sf::Vector2f(p.x + w / 2, - p.y + h / 2));
@@ -272,7 +314,7 @@ Point2D getNextPoint()
     bool ptRendered = true;
     
     while (ptRendered && currentState == state::rendering) {
-        position = arc4random() % totalPixels;
+        position = std::rand() % totalPixels;
         
         if (renderedPoints[position] == false) {
             renderedPoints[position] = true;

@@ -66,7 +66,7 @@ double tolerance = 0.00000001;
 
 // Renderer settings
 const int w = 1024;
-const int h = 512;
+const int h = 768;
 const int totalPixels = w * h;
 unsigned char* renderImage = new unsigned char[totalPixels * 4];
 

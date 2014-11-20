@@ -32,8 +32,6 @@ public:
     };
     
     // Operators
-//    Color operator+(const Color &c) const;
-    
     template <class T, class U>
     friend Color operator+(const T &c1, const U &c2) {
         return Color(c1) + Color(c2);
@@ -45,6 +43,9 @@ public:
         return Color(c1) * Color(c2);
     };
     friend Color operator*(const Color &c1, const Color &c2);
+    
+    // Doubles behave on a scale of 0-1, not 0-255, so we have special
+    // methods that don't just cast (unsigned char).
     friend Color operator*(const Color &c1, const double &c2);
     friend Color operator*(const double &c1, const Color &c2);
     

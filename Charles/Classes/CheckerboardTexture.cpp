@@ -19,7 +19,18 @@ CheckerboardTexture::CheckerboardTexture(Color color1, Color color2, double refl
 
 // Local color
 Color CheckerboardTexture::localColor(const Point3D &p) {
-    return ((abs((int)round(p.x())) / 25 + abs((int)round(p.y())) / 25 + abs((int)round(p.z())) / 25) % 2 == 0) ? _localColor1 : _localColor2;
+    int squareX = abs((int)round(p.x())) / 25;
+    int squareY = abs((int)round(p.y())) / 25;
+    int squareZ = abs((int)round(p.z())) / 25;
+    
+    bool negX = p.x() < 0;
+    // TODO
+//    bool negY = p.y() < 0;
+//    bool negZ = p.z() < 0;
+    
+    bool blackSquare = (negX) ? ((squareX + squareY + squareZ) % 2 == 0) : !((squareX + squareY + squareZ) % 2 == 0);
+    
+    return blackSquare ? _localColor1 : _localColor2;
 }
 
 // Specular Reflection

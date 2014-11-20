@@ -9,6 +9,7 @@
 #ifndef __Charles__Vector3D__
 #define __Charles__Vector3D__
 
+#include <cmath>
 #include <iostream>
 
 class Vector3D {
@@ -30,6 +31,8 @@ public:
     Vector3D operator/(const double &nv) const;
     Vector3D operator*(const double &nv) const;
     
+    friend Vector3D operator*(const double &nv, const Vector3D &v);
+    
     // Dot and cross products, respectively.
     double operator*(const Vector3D &nv) const;
     Vector3D cross(const Vector3D &nv) const;
@@ -40,6 +43,10 @@ public:
     
     Vector3D reflect(const Vector3D &nv) const;
     
+    // Angle stuff
+    const Vector3D rotate(const Vector3D &rotation) const;
+    
+    // Accessors
     const double x() const { return _x; };
     const double y() const { return _y; };
     const double z() const { return _z; };
@@ -50,6 +57,9 @@ public:
     const T y() const { return _y; };
     template <class T>
     const T z() const { return _z; };
+    
+    
+    friend std::ostream &operator<<(std::ostream &stream, const Vector3D &vector);
     
 private:
     double _x;
