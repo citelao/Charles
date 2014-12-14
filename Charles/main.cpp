@@ -16,7 +16,7 @@ int main(int argc, const char * argv[])
     std::cout << "Go, Charles!\n";
 
     // Time everything!
-    start = time(NULL);
+    auto start = Clock::now();
     std::srand((unsigned int)std::time(0));
     
     /**
@@ -37,6 +37,8 @@ int main(int argc, const char * argv[])
     objects.push_back(new RectPrism(new CheckerboardTexture(Color(255, 130, 0)), Point3D(-700, -20, -900), Vector3D(9001, 10, 9001)));
     
     objects.push_back(new Sphere(new SolidTexture(Color(255), 0, 1, 1.3), -100, 30, 300, 40));
+    
+    objects.push_back(new Sphere(new SolidTexture(Color(255), 1, 0, 0), -250, 30, 200, 40));
 //    objects.push_back(new Sphere(new SolidTexture(Color(255), 0.8, 1, 1.3), -180, 30, 270, 40));
     objects.push_back(new Sphere(new CheckerboardTexture(Color(255)), -180, 30, 270, 40));
 //    objects.push_back(new Sphere(new SolidTexture(Color(255), 0, 1, 1), -80, 30, 200, 40));
@@ -67,20 +69,11 @@ int main(int argc, const char * argv[])
     /** 
      * Start render threads.
      **/
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < renderThreads; i++) {
         std::thread thread(&render);
         thread.detach();
     }
-//    
-//    std::thread rt1(&render);
-//    std::thread rt2(&render);
-//    std::thread rt3(&render);
-//    std::thread rt4(&render);
-//    rt1.detach();
-//    rt2.detach();
-//    rt3.detach();
-//    rt4.detach();
-    
+
     /**
      * Sensible optimization
      **/
@@ -161,14 +154,10 @@ int main(int argc, const char * argv[])
                     
                     if (currentState != state::rendering) {
                         currentState = state::rendering;
-                        std::thread rt1(&render);
-                        std::thread rt2(&render);
-                        std::thread rt3(&render);
-                        std::thread rt4(&render);
-                        rt1.detach();
-                        rt2.detach();
-                        rt3.detach();
-                        rt4.detach();
+                        for (int i = 0; i < renderThreads; i++) {
+                            std::thread thread(&render);
+                            thread.detach();
+                        }
                     }
                 }
             }
@@ -199,12 +188,11 @@ int main(int argc, const char * argv[])
         // Determine correct action based on state
         if (currentState == state::notifying) // Print out statistics once if done rendering
         {
-            end = time(NULL);
-            
-            double secs = (double)(end - start);
+            auto end = Clock::now();
+            auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
             
             std::cout << "Done Rendering \n";
-            std::cout << "Render time: " << secs << " seconds \n";
+            std::cout << "Render time: " << duration.count() / 1000  << "." << duration.count() % 1000 << " seconds \n";
             std::cout << "Total Points Rendered: " << totalRenderedPoints << "/" << totalPixels << "\n";
             std::cout << "Collided rays: " << collided << "\n";
             std::cout << "Shadow checks: " << checks << "\n";
